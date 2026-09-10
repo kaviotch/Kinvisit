@@ -1,0 +1,31 @@
+# Local form submissions. preview.py writes every submission here in the shape
+# Netlify delivers them. It is test data today and could be a real family's
+# details tomorrow, so it never goes into the repository.
+_submissions.log
+
+# gen_assets.py and gen_photos.py scratch space.
+_render/
+
+# Written by build.py from the environment at build time. Keeping it out means
+# a developer's own Supabase values can never be committed by accident, and
+# Netlify regenerates it on every deploy.
+site/assets/js/config.js
+
+# Temporary pages the test suites and qa.py write into site/ and delete again.
+site/_t_*.html
+site/_qa_*.html
+site/_probe*.html
+site/_nav.html
+site/_err.html
+site/_h.html
+site/_shot.html
+
+# Nothing here is ever a real secret, but the pattern is worth refusing.
+.env
+.env.*
+*.pem
+*.key
+
+__pycache__/
+*.pyc
+.DS_Store

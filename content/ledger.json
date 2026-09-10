@@ -1,0 +1,27 @@
+{
+  "_comment": "The live trust ledger. Edit by hand after every visit. Nothing here is generated, estimated, or rounded up. While published is false the ledger does not render anywhere, because publishing a count we have not verified is worse than publishing nothing. Set published to true the moment the numbers below are true.",
+
+  "published": false,
+
+  "since": null,
+  "lastUpdated": null,
+
+  "visitsAttended": 0,
+  "reportsDelivered": 0,
+  "deliveredSameDay": 0,
+  "deliveredLate": 0,
+  "hospitalsVisited": 0,
+  "medianHoursToReport": null,
+
+  "lateIncidents": [],
+
+  "_incidentShape": {
+    "_comment": "Copy this object into lateIncidents every time the same-day promise is missed. cause and changeMade are the important fields. Anyone can publish a failure. Publishing what changed because of it is what makes it evidence.",
+    "date": "2026-08-02",
+    "hospital": "Withheld",
+    "reason": "Consultation ended 8:40pm. Report sent 11:20am the following day.",
+    "cause": "The companion, who was also the founder, had a second appointment that evening and should not have scheduled both.",
+    "changeMade": "We now cap visits at two per day.",
+    "billed": false
+  }
+}

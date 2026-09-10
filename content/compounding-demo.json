@@ -1,0 +1,231 @@
+{
+  "_comment": "Illustrative. Not a real patient. One coherent twelve-month story, authored by hand. counterLine is derived from the data above it by content/_build_compounding.py, so the counts can never drift from the table. Have a nurse read this before it goes live.",
+  "illustrative": true,
+  "clinicallyReviewed": false,
+  "carriedQuestion": {
+    "text": "Hand swelling. Has this been mentioned to anyone?",
+    "raisedAt": 2,
+    "resolvedAt": 6,
+    "resolution": "Raised at nephrology, 14 Sept. Referred to rheumatology."
+  },
+  "medicationOrder": [
+    "Metformin",
+    "Atorvastatin",
+    "Telmisartan",
+    "Glimepiride",
+    "Diclofenac, oral",
+    "Diclofenac, gel",
+    "Amlodipine",
+    "Hydroxychloroquine",
+    "Calcium with vitamin D3",
+    "Latanoprost, drops"
+  ],
+  "visits": [
+    {
+      "n": 1,
+      "date": "12 Mar",
+      "specialty": "Endocrinology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD"
+      },
+      "note": "Baseline. Two standing medicines recorded for the first time.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 1. One specialist. Two medicines recorded."
+    },
+    {
+      "n": 2,
+      "date": "09 Apr",
+      "specialty": "Endocrinology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD"
+      },
+      "note": "Swelling in the right hand raised by the companion. Doctor advised watching it. No test ordered.",
+      "questionsRaised": [
+        "Hand swelling. Has this been mentioned to anyone?"
+      ],
+      "questionsResolved": [],
+      "counterLine": "Visit 2. One specialist. Two medicines recorded. One question raised, and unanswered."
+    },
+    {
+      "n": 3,
+      "date": "14 May",
+      "specialty": "Nephrology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD"
+      },
+      "note": "Renal panel read in the room. eGFR 58. Telmisartan started.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 3. Two specialists. Three medicines recorded. One question carried across one month, still unanswered."
+    },
+    {
+      "n": 4,
+      "date": "11 Jun",
+      "specialty": "Endocrinology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Glimepiride": "1mg OD"
+      },
+      "note": "HbA1c 7.6%. Glimepiride added, dose held low because of the May renal result.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 4. Two specialists. Four medicines recorded. One question carried across two months, still unanswered."
+    },
+    {
+      "n": 5,
+      "date": "16 Jul",
+      "specialty": "Orthopaedics",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Glimepiride": "1mg OD",
+        "Diclofenac, oral": "Withdrawn",
+        "Diclofenac, gel": "Applied BD"
+      },
+      "note": "Oral anti-inflammatory proposed for knee pain. Companion produced the May eGFR. Withdrawn, topical substituted.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 5. Three specialists. Six medicines recorded. One withdrawn. One question carried across three months, still unanswered."
+    },
+    {
+      "n": 6,
+      "date": "14 Sep",
+      "specialty": "Nephrology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Glimepiride": "1mg OD",
+        "Diclofenac, gel": "Applied BD",
+        "Amlodipine": "2.5mg OD"
+      },
+      "note": "Swelling raised again with the renal panel in hand. Referred to rheumatology. Amlodipine added for blood pressure.",
+      "questionsRaised": [],
+      "questionsResolved": [
+        "Raised at nephrology, 14 Sept. Referred to rheumatology."
+      ],
+      "counterLine": "Visit 6. Three specialists. Seven medicines recorded. One withdrawn. The question from April answered, after five months."
+    },
+    {
+      "n": 7,
+      "date": "09 Oct",
+      "specialty": "Rheumatology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Glimepiride": "1mg OD",
+        "Diclofenac, gel": "Applied BD",
+        "Amlodipine": "2.5mg OD",
+        "Hydroxychloroquine": "200mg OD"
+      },
+      "note": "First rheumatology consultation. Hydroxychloroquine started.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 7. Four specialists. Eight medicines recorded. One withdrawn."
+    },
+    {
+      "n": 8,
+      "date": "06 Nov",
+      "specialty": "Rheumatology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Glimepiride": "1mg OD",
+        "Diclofenac, gel": "Applied BD",
+        "Amlodipine": "2.5mg OD",
+        "Hydroxychloroquine": "200mg OD",
+        "Calcium with vitamin D3": "One daily"
+      },
+      "note": "Review. Calcium with vitamin D3 added.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 8. Four specialists. Nine medicines recorded. One withdrawn."
+    },
+    {
+      "n": 9,
+      "date": "04 Dec",
+      "specialty": "Endocrinology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Glimepiride": "Withdrawn",
+        "Diclofenac, gel": "Applied BD",
+        "Amlodipine": "2.5mg OD",
+        "Hydroxychloroquine": "200mg OD",
+        "Calcium with vitamin D3": "One daily"
+      },
+      "note": "Two low-sugar episodes reported by the family. Glimepiride withdrawn.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 9. Four specialists. Nine medicines recorded. Two withdrawn."
+    },
+    {
+      "n": 10,
+      "date": "15 Jan",
+      "specialty": "Ophthalmology",
+      "medications": {
+        "Metformin": "1000mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Diclofenac, gel": "Applied BD",
+        "Amlodipine": "2.5mg OD",
+        "Hydroxychloroquine": "200mg OD",
+        "Calcium with vitamin D3": "One daily",
+        "Latanoprost, drops": "One at night"
+      },
+      "note": "Diabetic eye screening. Raised eye pressure found. Latanoprost started.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 10. Five specialists. Ten medicines recorded. Two withdrawn."
+    },
+    {
+      "n": 11,
+      "date": "12 Feb",
+      "specialty": "Nephrology",
+      "medications": {
+        "Metformin": "500mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Diclofenac, gel": "Applied BD",
+        "Amlodipine": "2.5mg OD",
+        "Hydroxychloroquine": "200mg OD",
+        "Calcium with vitamin D3": "One daily",
+        "Latanoprost, drops": "One at night"
+      },
+      "note": "eGFR down to 44. Metformin reduced from 1000mg to 500mg twice daily.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 11. Five specialists. Ten medicines recorded. Two withdrawn."
+    },
+    {
+      "n": 12,
+      "date": "11 Mar",
+      "specialty": "Endocrinology",
+      "medications": {
+        "Metformin": "500mg BD",
+        "Atorvastatin": "10mg OD",
+        "Telmisartan": "40mg OD",
+        "Diclofenac, gel": "Applied BD",
+        "Amlodipine": "2.5mg OD",
+        "Hydroxychloroquine": "200mg OD",
+        "Calcium with vitamin D3": "One daily",
+        "Latanoprost, drops": "One at night"
+      },
+      "note": "Annual review. No change. The full year is on one page for the first time.",
+      "questionsRaised": [],
+      "questionsResolved": [],
+      "counterLine": "Visit 12. Five specialists. Ten medicines recorded. Two withdrawn."
+    }
+  ]
+}

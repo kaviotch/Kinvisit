@@ -1,0 +1,18 @@
+{
+  "founder-portrait": {
+    "height": 220,
+    "width": 220
+  },
+  "opd-corridor": {
+    "height": 255,
+    "width": 340
+  },
+  "questions-notebook": {
+    "height": 456,
+    "width": 380
+  },
+  "report-on-desk": {
+    "height": 456,
+    "width": 380
+  }
+}

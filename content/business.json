@@ -1,0 +1,20 @@
+{
+  "_comment": "Business identity, as required of an online seller by the Consumer Protection (E-Commerce) Rules 2020 and by every Indian payment gateway. It ships empty and NOTHING renders until it is true, the same rule as ledger.json: a made-up address on a legal page is worse than no address. Fill legalName and the address, set published to true, and the details appear in the footer and on the legal pages. The grievance officer is a named human under the DPDP Act, 2023; the name may be the founder's.",
+  "published": false,
+  "legalName": "",
+  "entityType": "",
+  "registeredAddress": {
+    "line1": "",
+    "line2": "",
+    "city": "",
+    "state": "",
+    "pin": ""
+  },
+  "udyamNumber": "",
+  "gstin": "",
+  "grievanceOfficer": {
+    "name": "",
+    "email": "",
+    "phone": ""
+  }
+}

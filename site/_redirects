@@ -1,0 +1,12 @@
+# Clean paths. Netlify serves /pricing from pricing.html automatically,
+# so no SPA catch-all is needed and every route is real HTML.
+/index.html      /             301!
+/home            /             301
+/contact         /about        301
+# Old hash routes from the previous build, for anything already shared.
+/#/record        /record        301
+/#/pricing       /pricing       301
+/#/book          /book          301
+/#/about         /about         301
+/#/faq           /faq           301
+/#/hospitals     /hospitals     301

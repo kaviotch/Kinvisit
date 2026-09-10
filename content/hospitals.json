@@ -1,0 +1,37 @@
+{
+  "_comment": "Coverage checker data. visitsAttended must be the real count, so it starts at 0 everywhere. typicalWaitMinutes is null until we have actually sat in that OPD and timed it; the checker says nothing about wait times while it is null rather than guessing. aliases exist because people type Max Saket, Max Hospital Saket, and Max Superspeciality Saket for the same building.",
+
+  "areas": [
+    "South Delhi", "Central Delhi", "West Delhi", "East Delhi", "North Delhi",
+    "Gurugram", "Noida", "Greater Noida", "Ghaziabad", "Faridabad"
+  ],
+
+  "hospitals": [
+    { "name": "AIIMS, Ansari Nagar", "aliases": ["aiims", "all india institute of medical sciences", "aiims delhi", "ansari nagar"], "area": "South Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Safdarjung Hospital", "aliases": ["safdarjung", "vmmc safdarjung", "safdarjang"], "area": "South Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Sir Ganga Ram Hospital", "aliases": ["ganga ram", "sgrh", "sir ganga ram", "gangaram"], "area": "Central Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Max Super Speciality, Saket", "aliases": ["max saket", "max hospital saket", "max superspeciality saket", "max"], "area": "South Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Indraprastha Apollo, Sarita Vihar", "aliases": ["apollo", "indraprastha apollo", "apollo delhi", "sarita vihar apollo"], "area": "South Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Fortis Escorts Heart Institute, Okhla", "aliases": ["fortis escorts", "escorts", "fortis okhla", "escorts heart"], "area": "South Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Moolchand Hospital, Lajpat Nagar", "aliases": ["moolchand", "mool chand", "moolchand medcity"], "area": "South Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "BLK-Max Super Speciality, Rajendra Place", "aliases": ["blk", "blk max", "b l kapur", "bl kapur"], "area": "Central Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Sri Balaji Action Medical Institute, Paschim Vihar", "aliases": ["action balaji", "balaji action", "sri balaji"], "area": "West Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Max Super Speciality, Shalimar Bagh", "aliases": ["max shalimar bagh", "max shalimar"], "area": "North Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Dharamshila Narayana, Vasundhara Enclave", "aliases": ["dharamshila", "dharamshila narayana", "narayana delhi"], "area": "East Delhi", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Medanta The Medicity, Gurugram", "aliases": ["medanta", "medicity", "medanta gurgaon", "medanta gurugram"], "area": "Gurugram", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Artemis Hospital, Gurugram", "aliases": ["artemis", "artemis gurgaon", "artemis gurugram"], "area": "Gurugram", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Fortis Memorial Research Institute, Gurugram", "aliases": ["fmri", "fortis gurgaon", "fortis gurugram", "fortis memorial"], "area": "Gurugram", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Max Super Speciality, Gurugram", "aliases": ["max gurgaon", "max gurugram"], "area": "Gurugram", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Fortis Hospital, Noida", "aliases": ["fortis noida"], "area": "Noida", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Jaypee Hospital, Noida", "aliases": ["jaypee", "jaypee noida"], "area": "Noida", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Yatharth Super Speciality, Noida", "aliases": ["yatharth", "yatharth noida"], "area": "Noida", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Kailash Hospital, Noida", "aliases": ["kailash", "kailash noida"], "area": "Noida", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Sharda Hospital, Greater Noida", "aliases": ["sharda", "sharda greater noida"], "area": "Greater Noida", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Yashoda Super Speciality, Ghaziabad", "aliases": ["yashoda", "yashoda ghaziabad", "yashoda kaushambi"], "area": "Ghaziabad", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Max Super Speciality, Vaishali", "aliases": ["max vaishali", "max ghaziabad"], "area": "Ghaziabad", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Metro Heart Institute, Faridabad", "aliases": ["metro heart", "metro faridabad", "metro hospital faridabad"], "area": "Faridabad", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Sarvodaya Hospital, Faridabad", "aliases": ["sarvodaya", "sarvodaya faridabad"], "area": "Faridabad", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Amrita Hospital, Faridabad", "aliases": ["amrita", "amrita faridabad"], "area": "Faridabad", "visitsAttended": 0, "typicalWaitMinutes": null },
+    { "name": "Asian Institute of Medical Sciences, Faridabad", "aliases": ["asian hospital", "aims faridabad", "asian institute"], "area": "Faridabad", "visitsAttended": 0, "typicalWaitMinutes": null }
+  ]
+}

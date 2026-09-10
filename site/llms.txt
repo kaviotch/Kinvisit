@@ -1,0 +1,58 @@
+# Kinvisit
+
+> Kinvisit sends a trained companion into an elderly parent's hospital
+> consultation in Delhi NCR and sends the family a written report the same day.
+> It is built for adult children living away from their parents.
+
+## What it is
+
+A person attends the consultation with your parent, asks the questions the
+family wrote down in advance, records the doctor's instructions and dosages
+exactly as given, reconciles the new prescription against every medicine the
+patient already takes, and sends the family a written report before midnight
+India time on the day of the visit. Across visits those reports become a
+maintained file: a medication history, a list of unresolved questions carried
+forward, and a record no single hospital holds.
+
+## What it is not
+
+Kinvisit is not a medical provider. Companions do not diagnose, prescribe,
+change a dose, give a second opinion, argue with the treating doctor, or
+consent to procedures. Kinvisit is not an emergency service, not a home nursing
+service, and not a hospital. It takes no commission from any hospital,
+laboratory, or pharmacy.
+
+## Where
+
+Delhi NCR only: Delhi, Gurugram, Noida, Greater Noida, Ghaziabad, Faridabad.
+Any hospital, clinic, or diagnostic centre in that area. No other city today.
+
+## What it costs
+
+Single visit, one report, no file maintained: INR 2,200.
+The record, one consultation a month with the file maintained: INR 3,200 per month.
+The record, two consultations a month: INR 5,400 per month.
+Additional visit on a plan: INR 1,600.
+If the report does not arrive the same day, that visit is not billed.
+
+## Current stage, stated honestly
+
+Pre-revenue. Sole proprietorship, one founder, no staff yet. The founder,
+Kunal Jain, attends every visit personally and is not clinically qualified.
+The nursing lead who will own the visit protocol and co-sign reports has not
+been hired. The sample report published on the site is illustrative, not a real
+patient. Any performance number on the site is published with its source.
+
+## Useful pages
+
+- {SITE}/record        a full sample consultation report, four visits
+- {SITE}/conversations how to tell your parent, your sibling, and the doctor
+- {SITE}/pricing       prices, cancellation, no-show and refund policy
+- {SITE}/promise       every time the same-day promise has been missed
+- {SITE}/consent       what the parent is asked to agree to, English and Hindi
+- {SITE}/proof         market research, sources, and competitive position
+- {SITE}/about         who attends today and the standard being built toward
+
+## Contact
+
+WhatsApp and phone {PHONE_DISPLAY}. Email {EMAIL}.

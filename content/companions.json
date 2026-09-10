@@ -1,0 +1,22 @@
+{
+ "_comment": "The companion roster. One honest card is stronger than one card plus two ghosts. Do not add a placeholder, a silhouette, or an 'and growing' tile. Add a person only when they exist, and fill every field. photo may be null: the card renders without an image rather than with a generic avatar. An empty companions array renders the hiring state. clinicallyQualified is the switch the site reads before it will describe the person who attends as qualified. Set it true only when the certificate is on file: check.py fails the build if any page claims a qualified attendant and no companion here records one.",
+ "companions": [
+  {
+   "id": "kunal-jain",
+   "name": "Kunal Jain",
+   "role": "Founder",
+   "photo": "founder-portrait",
+   "photoAlt": "Kunal Jain in a hospital outpatient department, with an overhead board listing token numbers against OPD room numbers behind him",
+   "qualification": "Not clinically qualified. Covers visits himself while we hire our nursing lead, and every report says so.",
+   "policeVerified": null,
+   "protocolCertified": null,
+   "visitsAttended": 0,
+   "languages": [
+    "Hindi",
+    "English"
+   ],
+   "inTheirWords": "My grandmother saw a doctor twice a month for years and the only report we ever got was that the doctor said it's fine. I go myself because I am not willing to promise a standard I have not hired yet.",
+   "clinicallyQualified": false
+  }
+ ]
+}
