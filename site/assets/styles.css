@@ -1,25 +1,23 @@
 /* ==========================================================================
    Kinvisit
-   A clinical document, published.
 
    Every colour, size, space and curve comes from tokens.css. There are no
    hardcoded values below, and check.py fails the build if one appears.
 
-   Three families on purpose: the site is set in Geist, the report is set in
-   Literata with Geist Mono for every dose and date. The report is meant to
-   read as a printed clinical document that happens to be embedded in a page,
-   not as another styled section of the page.
+   One typeface, Figtree, across the whole site. The report reads as a
+   document because of a black header bar, a reference number, hairline rules
+   and a signed footer, not because it switches to a serif. Depth comes from a
+   hard offset rather than a blur: a blurred shadow implies a light source, a
+   hard offset implies one sheet of paper resting on another, which is what
+   these are.
    ========================================================================== */
 
 @font-face {
-  font-family: 'Geist';
+  font-family: 'Figtree';
   font-style: normal;
-  font-weight: 400 500;
+  font-weight: 300 900;
   font-display: swap;
-  src: url('/assets/fonts/geist-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC,
-                 U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('/assets/fonts/figtree.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Geist Mono';
@@ -27,19 +25,6 @@
   font-weight: 400;
   font-display: swap;
   src: url('/assets/fonts/geist-mono-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC,
-                 U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Literata';
-  font-style: normal;
-  font-weight: 400 500;
-  font-display: swap;
-  src: url('/assets/fonts/literata-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-                 U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC,
-                 U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ------------------------------------------------------------------- reset */
@@ -137,10 +122,10 @@ section.tight { padding: var(--sect-tight) 0; }
 section.slow  { padding: var(--sect-slow) 0; }
 
 .sunk  { background: var(--paper-deep); }
-.panel { background: var(--ink); color: rgb(252 251 249 / 0.72); }
+.panel { background: var(--ink); color: rgb(255 255 255 / 0.72); }
 .panel h1, .panel h2, .panel h3, .panel h4, .panel strong { color: var(--paper); }
-.panel .fine, .panel .lede { color: rgb(252 251 249 / 0.62); }
-.panel .eyebrow { color: rgb(252 251 249 / 0.55); }
+.panel .fine, .panel .lede { color: rgb(255 255 255 / 0.62); }
+.panel .eyebrow { color: rgb(255 255 255 / 0.55); }
 .panel a { color: var(--paper); }
 
 /* Breaking the column. Three moments on the homepage use these. */
@@ -256,7 +241,7 @@ hr, .rule { display: none; }
 .btn-ghost:hover { border-color: var(--ink); }
 .btn-dark { background: var(--paper); color: var(--ink); }
 .btn-dark:hover { background: var(--paper-deep); }
-.btn-outline-light { background: transparent; color: var(--paper); border-color: rgb(252 251 249 / 0.32); }
+.btn-outline-light { background: transparent; color: var(--paper); border-color: rgb(255 255 255 / 0.32); }
 .btn-outline-light:hover { border-color: var(--paper); }
 .btn-sm { min-height: 44px; padding: var(--s-2) var(--s-3); }
 .btn-block { width: 100%; }
@@ -297,10 +282,10 @@ hr, .rule { display: none; }
 
 /* ------------------------------------------------------------------ footer */
 
-.site-foot { background: var(--ink); color: rgb(252 251 249 / 0.62); padding: var(--s-6) 0 var(--s-5); }
+.site-foot { background: var(--ink); color: rgb(255 255 255 / 0.62); padding: var(--s-6) 0 var(--s-5); }
 .foot-grid { display: grid; gap: var(--s-5); }
 @media (min-width: 760px) { .foot-grid { grid-template-columns: 1.6fr 1fr 1fr; } }
-.site-foot h2 { color: rgb(252 251 249 / 0.55); margin: 0 0 var(--s-3); }
+.site-foot h2 { color: rgb(255 255 255 / 0.55); margin: 0 0 var(--s-3); }
 .site-foot a { color: var(--paper); text-decoration: none; }
 .site-foot a:hover { text-decoration: underline; }
 .foot-links { display: grid; gap: var(--s-2); font-size: var(--t-caption); }
@@ -308,7 +293,7 @@ hr, .rule { display: none; }
 .site-foot p { max-width: 36ch; font-size: var(--t-caption); line-height: 1.6; }
 .foot-bottom {
   margin-top: var(--s-5); padding-top: var(--s-4);
-  border-top: 1px solid rgb(252 251 249 / 0.12);
+  border-top: 1px solid rgb(255 255 255 / 0.12);
   display: grid; gap: var(--s-3); font-size: var(--t-caption);
 }
 @media (min-width: 760px) { .foot-bottom { grid-template-columns: 1fr auto; align-items: end; } }
@@ -529,7 +514,7 @@ hr, .rule { display: none; }
   background: var(--paper);
   border-radius: var(--radius-paper);
   border-top: 2px solid var(--ink);
-  box-shadow: 0 1px 2px rgb(20 20 15 / 0.05), 0 18px 40px -28px rgb(20 20 15 / 0.35);
+  box-shadow: 0 1px 2px rgb(35 41 43 / 0.05), 0 18px 40px -28px rgb(35 41 43 / 0.35);
   padding: var(--s-5);
   font-family: var(--font-report);
   color: var(--ink-70);
@@ -869,7 +854,7 @@ table.med td.newly { color: var(--ink); }
 .cs-controls { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; margin-bottom: var(--s-4); }
 .cs-arrow {
   font: inherit; width: 44px; height: 44px; flex: none;
-  border: 1px solid rgb(252 251 249 / 0.28); background: none;
+  border: 1px solid rgb(255 255 255 / 0.28); background: none;
   color: var(--paper); cursor: pointer; border-radius: var(--radius);
 }
 .cs-arrow:disabled { opacity: 0.3; cursor: default; }
@@ -877,31 +862,31 @@ table.med td.newly { color: var(--ink); }
 .cs-step {
   font: inherit; font-family: var(--font-mono); font-size: var(--t-caption);
   flex: 1 0 36px; min-width: 36px; min-height: 44px;
-  border: 1px solid rgb(252 251 249 / 0.2); background: none;
-  color: rgb(252 251 249 / 0.62); cursor: pointer; border-radius: var(--radius);
+  border: 1px solid rgb(255 255 255 / 0.2); background: none;
+  color: rgb(255 255 255 / 0.62); cursor: pointer; border-radius: var(--radius);
 }
 .cs-step[aria-current="true"] { background: var(--paper); border-color: var(--paper); color: var(--ink); }
-.cs-step.done { color: var(--paper); border-color: rgb(252 251 249 / 0.4); }
-.cs-showall { color: var(--paper); border-color: rgb(252 251 249 / 0.28); }
+.cs-step.done { color: var(--paper); border-color: rgb(255 255 255 / 0.4); }
+.cs-showall { color: var(--paper); border-color: rgb(255 255 255 / 0.28); }
 .cs-showall:hover { color: var(--paper); border-color: var(--paper); }
 .cs-counter {
   font-family: var(--font-mono); font-size: var(--t-caption);
-  line-height: 1.7; color: rgb(252 251 249 / 0.72);
+  line-height: 1.7; color: rgb(255 255 255 / 0.72);
   margin: 0 0 var(--s-3); min-height: 3.4em; max-width: none;
 }
 .cs-question {
   display: grid; gap: var(--s-1);
-  border-left: 1px solid rgb(252 251 249 / 0.35);
+  border-left: 1px solid rgb(255 255 255 / 0.35);
   padding: var(--s-2) 0 var(--s-2) var(--s-3);
   margin-bottom: var(--s-4);
 }
 .cs-question[hidden] { display: none; }
-.cs-q-tag { color: rgb(252 251 249 / 0.62); }
+.cs-q-tag { color: rgb(255 255 255 / 0.62); }
 .cs-q-text { color: var(--paper); }
-.cs-q-res { color: rgb(252 251 249 / 0.62); font-size: var(--t-caption); }
+.cs-q-res { color: rgb(255 255 255 / 0.62); font-size: var(--t-caption); }
 .cs-q-res[hidden] { display: none; }
 
-.cs-scroll { overflow-x: auto; border-top: 1px solid rgb(252 251 249 / 0.28); }
+.cs-scroll { overflow-x: auto; border-top: 1px solid rgb(255 255 255 / 0.28); }
 .cs-table {
   border-collapse: collapse; width: 100%;
   font-family: var(--font-mono); font-size: var(--t-caption);
@@ -909,24 +894,24 @@ table.med td.newly { color: var(--ink); }
 }
 .cs-table th, .cs-table td {
   padding: var(--s-2) var(--s-3) var(--s-2) 0; text-align: left;
-  border-bottom: 1px solid rgb(252 251 249 / 0.12); white-space: nowrap;
+  border-bottom: 1px solid rgb(255 255 255 / 0.12); white-space: nowrap;
 }
 .cs-table thead th { vertical-align: bottom; font-weight: var(--w-regular); }
 .cs-table th:first-child { width: 170px; }
 .cs-table thead th { width: 104px; }
 .cs-table .cs-spacer { width: auto; padding: 0; }
-.cs-vn { display: block; color: rgb(252 251 249 / 0.55); }
+.cs-vn { display: block; color: rgb(255 255 255 / 0.55); }
 .cs-vd { display: block; font-family: var(--font-mono); color: var(--paper); }
-.cs-vs { display: block; color: rgb(252 251 249 / 0.55); }
+.cs-vs { display: block; color: rgb(255 255 255 / 0.55); }
 .cs-table tbody th {
   font-family: var(--font-ui); font-size: var(--t-body);
   font-weight: var(--w-regular); color: var(--paper);
   position: sticky; left: 0; background: var(--ink);
 }
-.cs-table td { color: rgb(252 251 249 / 0.62); text-align: right; }
+.cs-table td { color: rgb(255 255 255 / 0.62); text-align: right; }
 /* decorative-glyph-exempt: the visible mark is a middot with aria-hidden,
    and the accessible text sits in a .vh span alongside it. */
-.cs-table td.cs-none { color: rgb(252 251 249 / 0.2); }
+.cs-table td.cs-none { color: rgb(255 255 255 / 0.2); }
 .cs-table td.cs-stop { color: var(--withdrawn); }
 .cs-mark { margin-right: var(--s-1); }
 .panel .scroll-hint { display: none; }
@@ -996,15 +981,15 @@ table.med td.newly { color: var(--ink); }
   border: 1px solid var(--ink-40); border-radius: var(--radius);
   background: var(--paper); color: var(--ink-70); resize: vertical;
 }
-.panel .sh-text { background: var(--ink); color: rgb(252 251 249 / 0.72); border-color: rgb(252 251 249 / 0.28); }
-.panel .sh-chip, .panel .sh-open { color: var(--paper); border-color: rgb(252 251 249 / 0.28); }
+.panel .sh-text { background: var(--ink); color: rgb(255 255 255 / 0.72); border-color: rgb(255 255 255 / 0.28); }
+.panel .sh-chip, .panel .sh-open { color: var(--paper); border-color: rgb(255 255 255 / 0.28); }
 .panel .sh-chip[aria-pressed="true"] { background: var(--paper); color: var(--ink); border-color: var(--paper); }
-.panel .sh-panel { border-top-color: rgb(252 251 249 / 0.35); }
+.panel .sh-panel { border-top-color: rgb(255 255 255 / 0.35); }
 
 .via-banner { background: var(--ink); color: var(--paper); }
 .via-in { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2) 0; flex-wrap: wrap; }
-.via-in p { margin: 0; flex: 1; min-width: 200px; font-size: var(--t-caption); color: rgb(252 251 249 / 0.72); }
-.via-x { background: none; border: 0; color: rgb(252 251 249 / 0.62); cursor: pointer; width: 44px; height: 44px; flex: none; }
+.via-in p { margin: 0; flex: 1; min-width: 200px; font-size: var(--t-caption); color: rgb(255 255 255 / 0.72); }
+.via-x { background: none; border: 0; color: rgb(255 255 255 / 0.62); cursor: pointer; width: 44px; height: 44px; flex: none; }
 
 /* ---------------------------------------------------- the hospital checker */
 
@@ -1469,7 +1454,7 @@ html:not(.js) .nav-links { display: flex; flex-wrap: wrap; gap: var(--s-1) var(-
   line-height: var(--lh-body);
   padding: var(--s-4);
   border-radius: var(--radius-paper);
-  box-shadow: 0 1px 2px rgb(20 20 15 / 0.06), 0 8px 24px rgb(20 20 15 / 0.10);
+  box-shadow: 0 1px 2px rgb(35 41 43 / 0.06), 0 8px 24px rgb(35 41 43 / 0.10);
 }
 .dk-doc-head { border-bottom: 2px solid var(--ink); padding-bottom: var(--s-2); margin-bottom: var(--s-3); }
 .dk-brand {
@@ -1857,7 +1842,7 @@ html:not(.js) .dk-nojs { display: block; }
    frames, so they are the narrowest of the set. */
 .shot-object, .shot-tall { margin: var(--s-4) 0; max-width: 420px; }
 .shot-object img, .shot-tall img {
-  box-shadow: 0 1px 2px rgb(20 20 15 / 0.08), 0 12px 32px rgb(20 20 15 / 0.12);
+  box-shadow: 0 1px 2px rgb(35 41 43 / 0.08), 0 12px 32px rgb(35 41 43 / 0.12);
 }
 
 /* The pair on /record: what the family sent, and what came back. Same size,
@@ -1904,7 +1889,7 @@ html:not(.js) .dk-nojs { display: block; }
   inset: 10px -6px -8px 6px;
   background: var(--paper);
   border-radius: var(--radius-paper);
-  box-shadow: 0 1px 2px rgb(20 20 15 / 0.06);
+  box-shadow: 0 1px 2px rgb(35 41 43 / 0.06);
   z-index: -1;
 }
 
@@ -2026,27 +2011,48 @@ html:not(.js) .dk-nojs { display: block; }
    weight.
    ========================================================================== */
 
-.hero-grid { display: grid; gap: var(--s-4); }
+/* Two attempts got this wrong in opposite directions. A tall skinny rail
+   beside the headline left 441px of dead paper under a short opening; moving
+   everything below the text left the whole right of the hero empty instead.
+   The picture is now a column that stretches to the text's height, so it
+   matches a two-line headline and a six-line one equally, and the facts run
+   as a band under both. */
+.hero-grid { display: grid; gap: var(--s-5); }
 @media (min-width: 1000px) {
   .hero-grid {
-    grid-template-columns: minmax(0, 1fr) 260px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
     gap: var(--s-6);
-    align-items: start;
+    align-items: stretch;
   }
+  .hero-grid .hero-rail { grid-column: 1 / -1; }
+  .hero-grid:not(:has(.hero-shot)) { grid-template-columns: minmax(0, 1fr); }
+}
+.hero-shot { margin: 0; display: flex; flex-direction: column; }
+.hero-shot .rail-frame { position: relative; flex: 1 1 auto; min-height: 200px; }
+.hero-shot .rail-frame picture { position: absolute; inset: 0; display: block; }
+.hero-shot .rail-frame img {
+  width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover;
+  border-radius: var(--radius-paper);
 }
 .hero-main { min-width: 0; }
 
-.hero-rail { border-top: 1px solid var(--ink); padding-top: var(--s-3); }
-@media (min-width: 1000px) {
-  /* Level with the headline, which is the space that reads as empty. The top
-     rule ties it to the eyebrow's baseline rather than floating it. */
-  .hero-rail {
-    border-top: 1px solid var(--ink);
-    padding: var(--s-3) 0 0;
-    margin-top: var(--s-5);
-  }
+.hero-rail {
+  border-top: 2px solid var(--ink);
+  padding-top: var(--s-4);
+  margin-top: var(--s-5);
+  display: grid;
+  gap: var(--s-4);
 }
-.hero-rail dl { margin: 0; display: grid; gap: var(--s-3); }
+@media (min-width: 860px) {
+  .hero-rail dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1180px) {
+  .hero-rail dl { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4) var(--s-5); }
+}
+/* With no picture the facts take the whole band rather than leaving the
+   first track empty. */
+
+.hero-rail dl { margin: 0; gap: var(--s-4) var(--s-5); }
 .hero-rail dt {
   font-family: var(--font-mono);
   font-size: var(--t-caption);
@@ -2088,3 +2094,534 @@ html:not(.js) .dk-nojs { display: block; }
    behind the panel reaches below it, so the gap has to clear that as well as
    the panel itself. */
 .report-stage .rv + .btn-row { margin-top: var(--s-5); }
+
+/* ==========================================================================
+   M23. The design language.
+
+   Same pages, same sections, same words. What changes below is the way the
+   system draws itself: pill actions, rounded sheets lifted on a hard offset,
+   one typeface carrying labels through weight rather than through a second
+   family, and a red that appears rarely enough to mean something.
+   ========================================================================== */
+
+/* ---- actions ---- */
+.btn {
+  border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: var(--w-bold);
+  letter-spacing: 0;
+  text-transform: none;
+  border-width: 2px;
+  padding: var(--s-3) var(--s-4);
+}
+.btn-primary { background: var(--accent); border-color: var(--accent); }
+.btn-primary:hover { background: var(--ink); border-color: var(--ink); }
+.btn-ghost { border-color: var(--ink); color: var(--ink); background: none; }
+.btn-ghost:hover { background: var(--ink); color: var(--paper); }
+.btn-sm { font-size: 15px; padding: var(--s-2) var(--s-3); min-height: 42px; }
+
+/* ---- labels. One family, so a label is told apart by weight and tracking
+        rather than by changing typeface mid-page. ---- */
+.eyebrow, .cap, .cmp-label, .rost-role, .per, .when, .step .n,
+.flag-lbl, .sample-note, .plan-exc-h, .esc-t, .cs-q-tag,
+.annot-tag, .annot-toggle-label, .vp-field h3, .trust, .ps-l,
+.site-foot h2, .incident h3, .wb-num, .or-rule span, .cc-win-d,
+.hc-label, .pr-q, .gap-q legend, .wb-step legend, .field label {
+  font-weight: var(--w-bold);
+}
+.eyebrow { color: var(--accent-ink); }
+
+/* Figures and identifiers keep the dot-matrix face: they are quoting a
+   board, a token or a reference, not labelling a section. */
+.wa-meta, .cs-vn, .cs-vs, .vp-head .date, .vp-ref dd, .dk-ref dd,
+.report-head, .rec-head .ref {
+  font-family: var(--font-led);
+  font-weight: var(--w-regular);
+}
+
+/* ---- sheets ---- */
+.visit-panel, .rost-card, .plan, .incident, .wa-card, .report-card,
+.form-note, .honest, .gap-section, .cs, .esc-panel, .conv-card {
+  border-radius: var(--radius);
+}
+.visit-panel, .plan, .rost-card, .report-card, .wa-card {
+  box-shadow: var(--lift);
+}
+.visit-panel::before { display: none; }
+
+/* ---- headings: the two-weight device, where a heading has two sentences ---- */
+h1, h2 { font-weight: var(--w-bold); }
+h3, h4 { font-weight: var(--w-medium); }
+.lede { font-weight: var(--w-regular); color: var(--ink-70); }
+
+/* ---- the alternating grounds ---- */
+.panel { background: var(--ink); color: var(--paper); }
+.sunk { background: var(--warm); }
+.report-stage { background: var(--paper-deep); }
+section.tight + section.tight { border-top: var(--rule); }
+
+/* ---- the pill list, used wherever the site lists names ---- */
+.hosp-list li, .area-list li {
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  font-weight: var(--w-medium);
+}
+
+/* The wayfinding strip that used to sit above the header is gone. It quoted
+   the board above a Delhi OPD corridor, but its token and room numbers were
+   invented and fixed, which is the one thing nothing else on this site does.
+   The board on the sign-in page (M27) is the same idea done honestly: every
+   field on it reflects something real. */
+
+/* ---- the grounds. The page alternates rather than running white
+        throughout, which is what gives it a colour identity from the first
+        screen instead of from an accent halfway down. ---- */
+.nav, .hero { background: var(--paper-deep); }
+.nav { border-bottom: 0; }
+.hero { padding-bottom: var(--s-6); }
+.hero + section { background: var(--paper); }
+
+/* ==========================================================================
+   M24. Elements.
+
+   The same words, given shapes. Every rule below restyles markup that was
+   already on the page: a bare list becomes a row of ticked chips, a price
+   strip becomes three cards with the middle one inverted, a list of hospital
+   names becomes pills. Nothing here invents copy.
+   ========================================================================== */
+
+/* ---- ticked chips. The yes-list is a list of things that are true, so it
+        gets the tick from the notebook's own corner checklist. ---- */
+.list.yes { display: grid; gap: var(--s-3); }
+@media (min-width: 720px) { .list.yes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.list.yes li {
+  position: relative;
+  border: var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+  padding: var(--s-3) var(--s-3) var(--s-3) 54px;
+  margin: 0;
+}
+.list.yes li::before {
+  content: "";
+  position: absolute; left: var(--s-3); top: var(--s-3);
+  width: 24px; height: 24px;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  background:
+    linear-gradient(45deg, transparent 44%, var(--accent) 44%, var(--accent) 56%, transparent 56%) no-repeat 6px 2px / 10px 14px,
+    linear-gradient(-45deg, transparent 44%, var(--accent) 44%, var(--accent) 56%, transparent 56%) no-repeat 2px 6px / 8px 10px;
+}
+
+/* ---- the plain list keeps its rule, but as a numbered sequence ---- */
+.list.plain { counter-reset: kv; }
+.list.plain li { counter-increment: kv; padding-left: 46px; }
+.list.plain li::before {
+  content: counter(kv, decimal-leading-zero);
+  left: 0; top: var(--s-3);
+  width: auto; height: auto; background: none;
+  font-family: var(--font-ui);
+  font-size: var(--t-caption);
+  font-weight: var(--w-bold);
+  color: var(--accent-ink);
+  letter-spacing: 0.06em;
+}
+
+/* ---- statistics as figures, the way the sample sets them ---- */
+.stats { display: grid; gap: var(--s-5); }
+@media (min-width: 760px) { .stats-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stat .num {
+  display: block;
+  font-size: clamp(44px, 5vw, 64px);
+  font-weight: var(--w-bold);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.stat p { margin-top: var(--s-3); }
+
+/* ---- pricing, as three cards with the middle one inverted ---- */
+.price-strip {
+  display: grid; gap: var(--s-3); margin-top: var(--s-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 820px) { .price-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.price-strip > div {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: var(--lift);
+  padding: var(--s-4);
+  display: flex; flex-direction: column; gap: var(--s-2);
+}
+.price-strip .ps-n {
+  font-size: clamp(30px, 3vw, 38px);
+  font-weight: var(--w-bold);
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+.price-strip .ps-feature { background: var(--ink); color: var(--paper); }
+/* The figure sets its own colour further up, and that colour is --ink. On the
+   inverted card that is ink on ink, which is a figure nobody can read. */
+.price-strip .ps-feature .ps-n { color: var(--paper); }
+.price-strip .ps-feature .ps-l { color: rgb(255 255 255 / 0.72); }
+.price-strip .ps-feature::after {
+  content: "most families";
+  position: absolute; top: -12px; right: var(--s-3);
+  background: var(--accent); color: var(--on-accent);
+  font-size: var(--t-caption); font-weight: var(--w-bold);
+  letter-spacing: var(--track-caption); text-transform: uppercase;
+  padding: 4px 11px; border-radius: var(--radius-pill);
+}
+
+/* ---- hospital and area names as pills ---- */
+.areas { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.areas .area {
+  background: var(--paper);
+  border-radius: var(--radius-pill);
+  padding: var(--s-2) var(--s-3);
+  font-weight: var(--w-medium);
+  font-size: var(--t-caption);
+  border: var(--rule);
+}
+
+/* ---- does / does not, as two facing cards ---- */
+.does {
+  background: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: var(--lift-sm);
+  padding: var(--s-4);
+}
+.does.no { background: var(--warm); box-shadow: none; }
+.does.future { background: var(--sand); box-shadow: none; }
+
+/* ---- photographs get a border and sit on the page like prints ---- */
+.shot img, .rost-photo img {
+  border: 6px solid var(--paper);
+  border-radius: var(--radius-paper);
+  box-shadow: var(--lift);
+}
+
+/* ==========================================================================
+   M25. Motion. Small, and off entirely under prefers-reduced-motion, which
+   the block further up already enforces globally.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn, .list.yes li, .price-strip > div, .areas .area, .rost-card, .visit-panel {
+    transition: transform var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease),
+                background var(--dur) var(--ease),
+                border-color var(--dur) var(--ease);
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .list.yes li:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .price-strip > div:hover { transform: translate(-2px, -2px); box-shadow: 9px 9px 0 rgb(35 41 43 / 0.12); }
+  .areas .area:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  /* Kept for the sign-in board, which ticks a field over when it changes. */
+  @keyframes kv-tick {
+    0%   { opacity: 0; transform: translateY(-6px); }
+    60%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 1; transform: none; }
+  }
+}
+
+/* ---- the picture in the rail, which is what fills the column of empty
+        paper that used to run down the right of every opening ---- */
+.rail-shot { margin: 0; }
+.rail-frame img { aspect-ratio: 16 / 10; object-fit: cover; }
+.rail-frame { position: relative; display: block; }
+.rail-shot img { display: block; width: 100%; height: auto;
+  border: 6px solid var(--paper); border-radius: var(--radius-paper); box-shadow: var(--lift); }
+.rail-shot figcaption {
+  font-size: var(--t-caption); line-height: var(--lh-caption);
+  color: var(--ink-55); margin-top: var(--s-3);
+}
+.rail-frame .stamp {
+  position: absolute; right: -10px; bottom: 14px;
+  transform: rotate(-7deg);
+  border: 2px solid var(--accent); color: var(--accent);
+  background: rgb(255 255 255 / 0.9);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: var(--t-caption); font-weight: var(--w-bold);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  max-width: 88%;
+}
+
+
+/* ==========================================================================
+   M26. What the invisible-text detector found.
+
+   Four places where a colour matched the surface behind it. One of them, the
+   primary call to action, was invisible on five pages and predates this
+   redesign: .panel a sets the link colour to --paper, which beats
+   .btn-dark's own colour on specificity, so the label was drawn in exactly
+   the colour of the button under it.
+   ========================================================================== */
+
+.panel .btn-dark { color: var(--ink); }
+.panel .btn-dark:hover { color: var(--ink); background: var(--paper-deep); }
+
+.panel .quote cite { color: rgb(255 255 255 / 0.62); }
+
+.panel .cs-table td.cs-stop { color: var(--withdrawn-lit); }
+.panel .cs-table td.cs-sub,
+.panel .cs-table td.cs-new { color: var(--substituted-lit); }
+
+.panel .dk-empty, .panel .cap, .panel .fine { color: rgb(255 255 255 / 0.62); }
+
+/* ==========================================================================
+   M27. The reception counter.
+
+   The sign-in page is reached by a family who are usually anxious and in a
+   hurry, and it used to be two grey boxes on white. It is now the thing the
+   rest of the site keeps quoting: a hospital reception, two numbered
+   counters, and a lit board above them answering the only three questions
+   anyone standing there has. Is it open. Which counter am I at. Is anything
+   happening.
+
+   Every state below is real. The board reflects focus, the protocol the page
+   arrived over, the wall clock, and whether a request is in flight; the
+   doors respond to :focus-within, which needs no script at all. Nothing here
+   is a decoration pretending to be data, and the board is aria-hidden
+   because everything on it is either ambient or already announced elsewhere
+   on the page.
+   ========================================================================== */
+
+.pt-strip {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-led);
+  font-size: var(--t-caption);
+  border-bottom: 3px solid var(--accent);
+}
+.pt-strip-in {
+  max-width: var(--col); margin: 0 auto;
+  padding: var(--s-3) var(--gutter);
+  display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5);
+  align-items: baseline;
+}
+.pt-seg { display: flex; align-items: baseline; gap: var(--s-2); min-width: 0; }
+.pt-seg-grow { flex: 1 1 12ch; }
+.pt-lab {
+  color: rgb(255 255 255 / 0.62);
+  text-transform: uppercase;
+  letter-spacing: var(--track-caption);
+  flex: none;
+}
+/* The reset sets b to ink. On an ink board that is text nobody can see,
+   so every value on the strip states its colour rather than inheriting. */
+.pt-val { color: var(--paper); letter-spacing: 0.06em; font-weight: var(--w-regular); }
+.pt-val[data-pt="counter"] { color: var(--accent-lit); }
+
+/* The status is the one field that changes colour, and only between two
+   states: lit when something is happening, and dimmed when the portal is not
+   connected at all. The words carry the difference between working and
+   refused. Green is not borrowed for the good case, because green on this
+   site means a medicine was substituted and nothing else. */
+.pt-strip[data-state="busy"]     .pt-val[data-pt="status"] { color: var(--accent-lit); }
+.pt-strip[data-state="refused"]  .pt-val[data-pt="status"] { color: var(--accent-lit); }
+.pt-strip[data-state="closed"]   .pt-val[data-pt="status"] { color: rgb(255 255 255 / 0.62); }
+
+.pt-clock i { font-style: normal; padding: 0 0.05em; }
+
+/* ---- the head. The reading measure is 62ch, which on a wide screen left a
+        third of the page empty beside it. The help that used to sit under the
+        two forms now sits in that column instead, which fills it and puts the
+        way out of trouble above the thing you are about to get stuck on
+        rather than below it. ---- */
+
+.pt-head .lede, .pt-head .form-note { max-width: var(--measure); }
+.pt-help { margin-top: var(--s-4); }
+.pt-help h2 {
+  font-size: var(--t-caption);
+  letter-spacing: var(--track-caption);
+  text-transform: uppercase;
+  color: var(--ink-55);
+  font-weight: var(--w-medium);
+  margin: 0 0 var(--s-2);
+}
+.pt-help p { color: var(--ink-70); margin: 0 0 var(--s-2); max-width: var(--measure); }
+.pt-help-line { font-family: var(--font-led); font-size: var(--t-caption); }
+
+@media (min-width: 1000px) {
+  .pt-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+    column-gap: var(--s-6);
+    align-items: start;
+  }
+  .pt-head > .pt-doors { grid-column: 1 / -1; }
+  .pt-help {
+    margin-top: 0;
+    border-left: 2px solid var(--accent);
+    padding-left: var(--s-4);
+  }
+}
+
+/* ---- the two counters ---- */
+
+.pt-doors { margin-top: var(--s-5); }
+
+.pt-form {
+  position: relative;
+  border: var(--rule);
+  border-radius: var(--radius);
+  padding: var(--s-5) var(--s-4) var(--s-4);
+  background: var(--paper);
+  box-shadow: var(--lift-sm);
+}
+
+/* The number, set into the top edge of the card the way a counter number is
+   set into the glass. */
+.pt-num {
+  position: absolute; top: 0; left: var(--s-4);
+  transform: translateY(-50%);
+  display: flex; align-items: baseline; gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  font-family: var(--font-led);
+  font-size: var(--t-caption);
+  text-transform: uppercase;
+  letter-spacing: var(--track-caption);
+  color: rgb(255 255 255 / 0.62);
+}
+.pt-num b { color: var(--paper); font-weight: var(--w-regular); letter-spacing: 0.06em; }
+
+/* The counter you are standing at. No script: the browser already knows
+   which form holds the caret. The other card does not fade — text that
+   dims is text somebody is still trying to read — it simply stops being
+   raised, so the one in use is the only one off the page. */
+.pt-doors:focus-within .pt-form { box-shadow: none; }
+.pt-form:focus-within {
+  border-color: var(--ink);
+  box-shadow: var(--lift) !important;
+}
+.pt-form:focus-within .pt-num { background: var(--accent); }
+.pt-form:focus-within .pt-num b { color: var(--on-accent); }
+.pt-form:focus-within .pt-num { color: rgb(255 255 255 / 0.82); }
+
+.pt-form .field { margin-bottom: var(--s-3); }
+.pt-form .field:last-of-type { margin-bottom: var(--s-3); }
+
+/* ---- the password field and its two attendants ---- */
+
+/* The rule belongs to the row, not to the input, so the field and the button
+   that unmasks it sit on one continuous line instead of two that miss. */
+.pt-pw {
+  display: flex; align-items: stretch; gap: var(--s-3);
+  border-bottom: 1px solid var(--ink-40);
+}
+.pt-pw:focus-within { border-bottom-color: var(--ink); }
+.pt-pw input { flex: 1 1 auto; border-bottom: 0; }
+.pt-pw input:focus { border-bottom: 0; }
+.pt-peek {
+  flex: none;
+  font: inherit;
+  font-size: var(--t-caption);
+  letter-spacing: var(--track-caption);
+  text-transform: uppercase;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  color: var(--ink-70);
+  min-height: 48px;
+  padding: 0;
+  cursor: pointer;
+}
+.pt-peek:hover { color: var(--ink); }
+.pt-peek[aria-pressed="true"] { color: var(--accent-ink); }
+.pt-peek[hidden] { display: none; }
+
+.pt-caps {
+  margin: calc(var(--s-3) * -1) 0 var(--s-3);
+  font-size: var(--t-caption);
+  color: var(--withdrawn);
+}
+.pt-caps[hidden] { display: none; }
+
+/* ---- the button while the request is in flight ---- */
+
+.pt-form.is-busy .btn { cursor: progress; }
+
+/* ---- the email field, once it holds something that is an address ---- */
+
+.pt-form .field { position: relative; }
+.pt-form .field.is-ok label::after {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 11px;
+  margin: 0 0 2px var(--s-2);
+  border: solid var(--accent);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* On a phone the strip keeps the two fields that answer something — which
+   counter, and what is happening — and the clock, which is the only thing on
+   it that moves. The transport is dropped rather than wrapped onto a third
+   line: the browser shows it in the address bar anyway. */
+@media (max-width: 599px) {
+  .pt-strip-in { gap: var(--s-2) var(--s-3); }
+  .pt-seg:has([data-pt="link"]) { display: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pt-form {
+    transition: box-shadow var(--dur) var(--ease),
+                border-color var(--dur) var(--ease),
+                transform var(--dur) var(--ease);
+  }
+  .pt-form:focus-within { transform: translate(-2px, -2px); }
+  .pt-num { transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .pt-peek { transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+
+  /* The board comes up a field at a time, once, the way a segment display
+     warms through its lines. It runs for half a second and never again. */
+  .pt-seg { animation: kv-seg 420ms var(--ease) both; }
+  .pt-seg:nth-child(2) { animation-delay: var(--stagger); }
+  .pt-seg:nth-child(3) { animation-delay: calc(var(--stagger) * 2); }
+  .pt-seg:nth-child(4) { animation-delay: calc(var(--stagger) * 3); }
+  @keyframes kv-seg {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* A value that has just changed ticks over, which is the whole reason a
+     board is worth having: it tells you something moved without being read. */
+  .pt-val.ticked { animation: kv-tick 360ms var(--ease) both; }
+
+  /* The colon of a wall clock. */
+  .pt-clock i { animation: kv-colon 2s steps(1, end) infinite; }
+  @keyframes kv-colon { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0.25; } }
+
+  /* While a password is being checked, the button carries a stripe travelling
+     across it, so a slow connection looks like work rather than a dead page. */
+  .pt-form.is-busy .btn {
+    background-image: linear-gradient(100deg,
+      rgb(255 255 255 / 0) 38%, rgb(255 255 255 / 0.28) 50%, rgb(255 255 255 / 0) 62%);
+    background-size: 240% 100%;
+    animation: kv-sweep 1.1s linear infinite;
+  }
+  @keyframes kv-sweep {
+    from { background-position: 140% 0; }
+    to   { background-position: -40% 0; }
+  }
+}
+
+/* The board is live or it is absent. A strip of dashes and a clock stopped at
+   --:-- is worse than no strip at all, and it is the one thing on this page
+   that genuinely cannot be rendered without a script. */
+html:not(.js) .pt-strip { display: none; }
+
+/* The medication-history heading sat flush on the table it introduces: the
+   prose block has no bottom margin and the revealed block has no top one, so
+   the settled gap was 0px. It read as air only while the reveal still held
+   the table 16px lower, which is why it took a timing change to surface. */
+.prose + .rv { margin-top: var(--s-4); }

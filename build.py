@@ -471,9 +471,38 @@ def business_block(compact=False):
 # in without reading the prose. It is never decoration. If a page has nothing
 # true to put here, it gets no rail.
 
-def hero_rail(items, label="At a glance"):
+def hero_rail(items, label="At a glance", shot=None, caption=None, stamp=None):
+    """The rail, and optionally the photograph that sits above it.
+
+    The rail alone left a column of empty paper down the right of every
+    opening. A picture fills it with the thing the page is about, and the
+    stamp is the kind of mark that ends up on real hospital paperwork."""
     rows = "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in items)
-    return f'<aside class="hero-rail" aria-label="{label}"><dl>{rows}</dl></aside>'
+    pic = ""
+    if shot:
+        mark = f'<span class="stamp">{stamp}</span>' if stamp else ""
+        cap = f'<figcaption>{caption}</figcaption>' if caption else ""
+        # The picture is a column beside the text, not a block inside the
+        # band. Beside it, it stretches to whatever height the text is, so
+        # neither a long opening nor a short one leaves a hole.
+        pic = (f'<figure class="hero-shot">'
+               f'<span class="rail-frame">{photo_img(shot)}{mark}</span>{cap}</figure>')
+    return (f'{pic}<aside class="hero-rail" aria-label="{label}">'
+            f'<dl>{rows}</dl></aside>')
+
+
+def photo_img(name):
+    """Just the picture element, for places that supply their own frame."""
+    alt = PHOTOS[name]
+    size = PHOTO_SIZES[name]
+    return (f'<picture>'
+            f'<source type="image/webp" srcset="/assets/photos/{name}.webp 1x,'
+            f' /assets/photos/{name}@2x.webp 2x">'
+            f'<img src="/assets/photos/{name}.jpg"'
+            f' srcset="/assets/photos/{name}.jpg 1x, /assets/photos/{name}@2x.jpg 2x"'
+            f' width="{size["width"]}" height="{size["height"]}"'
+            f' loading="lazy" decoding="async" alt="{alt}">'
+            f'</picture>')
 
 
 def _with_rail(body, rail):
@@ -553,7 +582,7 @@ def page(path, title, desc, body, current=None, noindex=False, jsonld=None, og_t
   <link rel="icon" href="/assets/favicon.png" sizes="96x96">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 
-  <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
   <style>{CSS}</style>
 
 {plausible}{ld}
@@ -1259,7 +1288,10 @@ def build_home():
         body,
         current=None,
         jsonld=jsonld,
-        rail=hero_rail([
+        rail=hero_rail(shot="opd-corridor",
+        caption="An outpatient department in Delhi NCR on an ordinary morning.",
+        stamp="Thursday 10:40 &middot; Room 5",
+        items=[
             ("Where", "Delhi NCR, 26 hospitals listed"),
             ("Who attends", C.ATTENDS_RAIL),
             ("You receive", "A written record before midnight"),
@@ -1329,7 +1361,9 @@ def build_record():
         "history that caught an unsafe prescription. Illustrative, not a real patient.",
         body,
         current="/record",
-        rail=hero_rail([
+        rail=hero_rail(shot="report-on-desk",
+        caption="The report as it arrives, on the family's own table.",
+        items=[
             ("This sample", "Four visits across one year"),
             ("Specialists", "Endocrinology, nephrology, orthopaedics"),
             ("What it caught", "An oral anti-inflammatory withdrawn"),
@@ -1920,7 +1954,9 @@ def build_about():
         "today.",
         body,
         current="/about",
-        rail=hero_rail([
+        rail=hero_rail(shot="questions-notebook",
+        caption="What a family sends us, the night before.",
+        items=[
             ("Attending today", "One named companion, not clinically qualified"),
             ("Clinically qualified", "Not yet. The nursing lead is the first hire"),
             ("Languages", "Hindi, English"),
@@ -2753,7 +2789,7 @@ def desk_set(legend, key, add_label):
 
 def portal_bar():
     """The signed-in header. One way back to the site, one way out."""
-    return """<a class="skip" href="#main">Skip to content</a>
+    return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="pt-bar">
   <div class="pt-bar-in">
     <a class="brand" href="/">{WORDMARK}</a>
@@ -2805,6 +2841,13 @@ def build_config():
         raise SystemExit("SUPABASE_ANON_KEY looks like a service-role key. Refusing to publish it.")
     body = (
         "/* Written by build.py from the environment. Do not edit. */\n"
+        # The portal pages carry a CSP with no 'unsafe-inline', so the class
+        # that tells the stylesheet a script ran cannot be set from the head
+        # the usual way. It is set here instead, in the first file the portal
+        # loads. Until it runs, html has no .js and the two rules that depend
+        # on it hold: the desk says it needs a script, and the sign-in board
+        # stays down rather than sitting there showing dashes.
+        "document.documentElement.className += ' js';\n"
         "window.KV_CONFIG = {\n"
         f"  supabaseUrl: {url!r},\n".replace("'", '"') +
         f"  supabaseAnonKey: {key!r}\n".replace("'", '"') +
@@ -2820,9 +2863,26 @@ def build_config():
 PORTAL_SCRIPTS = ("/assets/js/config.js", "/assets/js/vendor/supabase.js",
                   "/assets/js/report.js", "/assets/js/portal.js")
 
+# The sign-in page alone gets the counter. It is loaded ahead of portal.js so
+# that its listeners exist before the auth module announces anything, and it
+# is not loaded on the two signed-in pages, which have no forms to dress.
+SIGNIN_SCRIPTS = ("/assets/js/config.js", "/assets/js/vendor/supabase.js",
+                  "/assets/js/report.js", "/assets/js/portal-ui.js",
+                  "/assets/js/portal.js")
 
-def login_form(kind, title, blurb, cta):
-    return f"""<form class="pt-form" data-login="{kind}" novalidate>
+
+def login_form(kind, counter, title, blurb, cta):
+    """One counter. The number is wayfinding rather than a fact about the
+    business, so it is hidden from a screen reader, which is told which form
+    it is in by the heading instead.
+
+    Two controls here start hidden and are revealed by portal-ui.js: a button
+    that unmasks the password, and the Caps Lock warning. Neither can do
+    anything without a script, and a control that does nothing is worse than
+    no control, so with scripts unreachable the form is exactly the plain
+    pair of fields it always was."""
+    return f"""<form class="pt-form" data-login="{kind}" data-counter="{counter}" novalidate>
+        <p class="pt-num" aria-hidden="true"><span>Counter</span><b>{counter}</b></p>
         <h2>{title}</h2>
         <p class="pt-blurb">{blurb}</p>
         <div class="field">
@@ -2830,11 +2890,16 @@ def login_form(kind, title, blurb, cta):
           <input id="{kind}-email" name="email" type="email" autocomplete="username"
                  required spellcheck="false">
         </div>
-        <div class="field">
+        <div class="field pt-field-pw">
           <label for="{kind}-password">Password</label>
-          <input id="{kind}-password" name="password" type="password"
-                 autocomplete="current-password" required>
+          <div class="pt-pw">
+            <input id="{kind}-password" name="password" type="password"
+                   autocomplete="current-password" required>
+            <button type="button" class="pt-peek" data-pt-peek hidden
+                    aria-controls="{kind}-password" aria-pressed="false">Show</button>
+          </div>
         </div>
+        <p class="pt-caps" data-pt-caps role="status" hidden>Caps Lock is on.</p>
         <p class="pt-error" id="{kind}-error" role="alert" hidden></p>
         <button type="submit" class="btn btn-primary" id="{kind}-submit">{cta}</button>
       </form>"""
@@ -2844,29 +2909,52 @@ def build_portal():
     """Two doors, side by side, because a family and a companion arrive here
     for different reasons and should not have to work out which half of the
     page is theirs. Both submit to the same Supabase project; what separates
-    them is the role on the account, checked after the password."""
+    them is the role on the account, checked after the password.
 
-    body = f"""<section class="tight">
-  <div class="wrap dk-head">
-    <p class="eyebrow">Kinvisit portal</p>
-    <h1>Sign in</h1>
-    <p class="lede" style="max-width:62ch">Accounts are issued by Kinvisit. There is no
-      sign-up form here: if you are a family we set your account up when the first visit was
-      booked, and if you are a companion it was set up when you joined.</p>
+    The page is dressed as the thing the rest of the site keeps quoting: an
+    OPD reception, with a board overhead. The board is aria-hidden, and every
+    field on it either reflects a real state (the wall clock, the transport
+    the page was served over, which form has focus, whether a request is in
+    flight) or repeats a sentence that is already in the page and already
+    announced. It invents nothing: there is no queue length, no waiting time
+    and no token number, because we would have to make all three up."""
 
-    <p class="form-note pt-unconfigured" id="pt-unconfigured" hidden><strong>The portal is not
-      connected yet.</strong> The build has no Supabase project configured, so neither door
-      will open. Set SUPABASE_URL and SUPABASE_ANON_KEY and deploy again.</p>
+    board = """<div class="pt-strip" data-pt-board aria-hidden="true">
+  <div class="pt-strip-in">
+    <span class="pt-seg"><span class="pt-lab">Counter</span><b class="pt-val" data-pt="counter">--</b></span>
+    <span class="pt-seg pt-seg-grow"><span class="pt-lab">Status</span><b class="pt-val" data-pt="status">Reception</b></span>
+    <span class="pt-seg"><span class="pt-lab">Link</span><b class="pt-val" data-pt="link">--</b></span>
+    <span class="pt-seg"><span class="pt-lab">Time</span><b class="pt-val pt-clock" data-pt="clock"><span data-pt-hh>--</span><i>:</i><span data-pt-mm>--</span></b></span>
+  </div>
+</div>"""
 
-    <div class="pt-doors">
-      {login_form("family", "Families", "Every consultation a companion has attended, and what was said at each one.", "Sign in to your records")}
-      {login_form("companion", "Companions", "Open the report desk to write up a consultation, and see the visits you have attended.", "Sign in to the desk")}
+    body = f"""{board}
+<section class="tight">
+  <div class="wrap dk-head pt-head">
+    <div class="pt-intro">
+      <p class="eyebrow">Kinvisit portal</p>
+      <h1>Sign in</h1>
+      <p class="lede">Accounts are issued by Kinvisit. There is no sign-up form here: if you
+        are a family we set your account up when the first visit was booked, and if you are a
+        companion it was set up when you joined.</p>
+
+      <p class="form-note pt-unconfigured" id="pt-unconfigured" hidden><strong>The portal is not
+        connected yet.</strong> The build has no Supabase project configured, so neither door
+        will open. Set SUPABASE_URL and SUPABASE_ANON_KEY and deploy again.</p>
     </div>
 
-    <p class="fine" style="margin-top:var(--s-4);max-width:62ch">Forgotten your password, or
-      never received an invitation? Message us on {PHONE_DISPLAY} or write to
-      <a href="mailto:{EMAIL}">{EMAIL}</a> and we will sort it out. We cannot read your
-      password, so we reset it rather than tell you what it was.</p>
+    <aside class="pt-help">
+      <h2>If you cannot get in</h2>
+      <p>Forgotten your password, or never received an invitation? Message us and we will sort
+        it out. We cannot read your password, so we reset it rather than tell you what it was.</p>
+      <p class="pt-help-line"><a href="tel:{PHONE_HREF}">{PHONE_DISPLAY}</a></p>
+      <p class="pt-help-line"><a href="mailto:{EMAIL}">{EMAIL}</a></p>
+    </aside>
+
+    <div class="pt-doors">
+      {login_form("family", "01", "Families", "Every consultation a companion has attended, and what was said at each one.", "Sign in to your records")}
+      {login_form("companion", "02", "Companions", "Open the report desk to write up a consultation, and see the visits you have attended.", "Sign in to the desk")}
+    </div>
   </div>
 </section>"""
 
@@ -2877,7 +2965,7 @@ def build_portal():
         "Kinvisit; there is no public sign-up.",
         body,
         noindex=True,
-        scripts=PORTAL_SCRIPTS,
+        scripts=SIGNIN_SCRIPTS,
         analytics=False,
         chrome=False,
     )

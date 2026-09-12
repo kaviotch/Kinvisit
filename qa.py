@@ -104,6 +104,106 @@ function run() {
     }
   });
 
+  /* Invisible text. A token used as both a background and the colour of the
+     text on it renders nothing, and it is invisible in the source too: both
+     sides read as var(--ink). Compare what the browser actually computed. */
+  /* Walk up compositing every translucent layer onto the one behind it. A
+     semi-transparent panel is not the colour it declares: --hairline at 0.14
+     over white renders as light grey, and reading the declared value alone
+     reports text as invisible when it is perfectly legible. */
+  function bgOf(el) {
+    var stack = [], n = el;
+    while (n && n !== document.documentElement) {
+      var c = getComputedStyle(n).backgroundColor;
+      var m = c && c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?/);
+      if (m) {
+        var a = m[4] === undefined ? 1 : parseFloat(m[4]);
+        if (a > 0) {
+          stack.push([+m[1], +m[2], +m[3], a]);
+          if (a >= 0.999) break;
+        }
+      }
+      n = n.parentElement;
+    }
+    var out = [255, 255, 255];
+    for (var i = stack.length - 1; i >= 0; i--) {
+      var L = stack[i];
+      out = [0, 1, 2].map(function (k) { return L[k] * L[3] + out[k] * (1 - L[3]); });
+    }
+    return 'rgb(' + out.map(Math.round).join(', ') + ')';
+  }
+  function parse(c) {
+    var m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    return m ? [+m[1], +m[2], +m[3]] : null;
+  }
+  function lin(v) { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+  function lum(c) { return 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]); }
+  function contrast(a, b) {
+    var la = lum(a), lb = lum(b), hi = Math.max(la, lb), lo = Math.min(la, lb);
+    return (hi + 0.05) / (lo + 0.05);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('main *'), function (e) {
+    var own = Array.prototype.filter.call(e.childNodes, function (n) {
+      return n.nodeType === 3 && n.textContent.trim().length > 1;
+    });
+    if (!own.length) return;
+    var r = box(e);
+    if (r.width < 2 || r.height < 2) return;
+    var cs = getComputedStyle(e);
+    if (cs.visibility === 'hidden' || +cs.opacity === 0) return;
+    var fg = parse(cs.color), bg = parse(bgOf(e));
+    if (!fg || !bg) return;
+    var c = contrast(fg, bg);
+    if (c < 1.6) {
+      out.push('INVISIBLE ' + c.toFixed(2) + ':1 :: ' + name(e));
+    }
+  });
+
+  /* Voids. Two shapes of wasted space, both measured rather than judged:
+     paper below the last thing in a section, and one column of a grid ending
+     far above its neighbour. */
+  Array.prototype.forEach.call(document.querySelectorAll('main section'), function (sec) {
+    var sr = box(sec);
+    if (sr.height < 120) return;
+    var lowest = sr.top;
+    Array.prototype.forEach.call(sec.querySelectorAll('*'), function (e) {
+      var cs = getComputedStyle(e);
+      if (cs.position === 'fixed' || cs.visibility === 'hidden') return;
+      var r = box(e);
+      if (r.width < 2 || r.height < 2) return;
+      if (r.bottom > lowest) lowest = r.bottom;
+    });
+    var pad = parseFloat(getComputedStyle(sec).paddingBottom) || 0;
+    var slack = Math.round(sr.bottom - lowest - pad);
+    if (slack > 150) {
+      out.push('VOID-BELOW ' + slack + 'px of empty paper under ' + name(sec).slice(0, 60));
+    }
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('main .wrap, main .hero-rail'), function (g) {
+    if (getComputedStyle(g).display !== 'grid') return;
+    var kids = Array.prototype.filter.call(g.children, function (e) {
+      var r = box(e); return r.height > 4;
+    });
+    if (kids.length < 2) return;
+    var rows = {};
+    kids.forEach(function (e) {
+      var r = box(e);
+      var key = Math.round(r.top / 8);
+      (rows[key] = rows[key] || []).push(r);
+    });
+    Object.keys(rows).forEach(function (k) {
+      var r = rows[k];
+      if (r.length < 2) return;
+      var lo = Math.min.apply(null, r.map(function (x) { return x.bottom; }));
+      var hi = Math.max.apply(null, r.map(function (x) { return x.bottom; }));
+      if (hi - lo > 220) {
+        out.push('VOID-BESIDE ' + Math.round(hi - lo) + 'px, one column of ' +
+                 name(g).slice(0, 46) + ' ends far above its neighbour');
+      }
+    });
+  });
+
   /* Escape: content wider than the container meant to hold it. */
   Array.prototype.forEach.call(document.querySelectorAll('main .wrap'), function (wrap) {
     var w = box(wrap), cs = getComputedStyle(wrap);
@@ -171,8 +271,12 @@ def check(page, width):
 
 
 def main():
+    # Underscore-prefixed files are working documents: design samples and the
+    # temporary pages the suites write. check.py skips them for the same
+    # reason, and they are not part of the site until they are.
     pages = sorted(os.path.basename(p) for p in
-                   __import__("glob").glob(os.path.join(OUT, "*.html")))
+                   __import__("glob").glob(os.path.join(OUT, "*.html"))
+                   if not os.path.basename(p).startswith("_"))
     total = 0
     for page in pages:
         findings = {}

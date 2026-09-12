@@ -150,11 +150,12 @@ def check_tokens():
     declared = set(re.findall(r"(--[a-z0-9-]+):", tokens))
     notes.append(f"tokens: {len(declared)} custom properties declared")
 
-    palette = re.findall(r"--(?:paper|paper-deep|ink|accent|withdrawn|substituted|on-accent):\s*(#[0-9A-Fa-f]{6})",
-                         tokens)
-    if len(set(palette)) > 6:
-        fails.append(f"tokens.css declares {len(set(palette))} literal colours, the brief allows 6: "
-                     f"{sorted(set(palette))}")
+    palette = re.findall(
+        r"--(?:paper|paper-deep|warm|sand|ink|accent|accent-ink|withdrawn|substituted|"
+        r"on-accent):\s*(#[0-9A-Fa-f]{6})", tokens)
+    if len(set(palette)) > 10:
+        fails.append(f"tokens.css declares {len(set(palette))} literal colours, the system "
+                     f"allows 10: {sorted(set(palette))}")
 
     styles = open(os.path.join(css_dir, "styles.css"), encoding="utf-8").read()
     # Comments go, except the one marker that grants an exemption, which has
@@ -169,18 +170,35 @@ def check_tokens():
 
     # rgb()/hsl() literals are allowed only as an alpha of the two palette
     # anchors, which is how ink-on-paper and paper-on-ink are expressed.
+    def _triple(name):
+        m = re.search(r"--" + name + r":\s*#([0-9A-Fa-f]{6})", tokens)
+        if not m:
+            return None
+        h = m.group(1)
+        return " ".join(str(int(h[i:i + 2], 16)) for i in (0, 2, 4))
+
+    # Read from tokens.css rather than written here, so changing the palette
+    # cannot leave a stale literal behind that this check still permits.
+    anchors = [t for t in (_triple("ink"), _triple("paper")) if t]
     for m in re.finditer(r"(?:rgb|hsl)a?\(([^)]*)\)", body):
         val = re.sub(r"\s+", " ", m.group(1)).strip()
-        if not (val.startswith("20 20 15 /") or val.startswith("252 251 249 /")):
-            fails.append(f"styles.css: colour literal rgb({val}) is not an alpha of ink or paper")
+        if not any(val.startswith(a + " /") for a in anchors):
+            fails.append(f"styles.css: colour literal rgb({val}) is not an alpha of "
+                         f"ink or paper ({' or '.join(anchors)})")
 
+    # Figtree is variable 300 to 900. Four weights are used and no others:
+    # 300 light, 400 reading, 600 labels, 800 headlines and figures.
     for m in re.finditer(r"font-weight:\s*(\d+)", body):
-        if m.group(1) not in ("400", "500"):
-            fails.append(f"styles.css: font-weight {m.group(1)}, only 400 and 500 are allowed")
+        if m.group(1) not in ("300", "400", "600", "800"):
+            fails.append(f"styles.css: font-weight {m.group(1)}, the system uses "
+                         f"300, 400, 600 and 800")
 
-    for m in re.finditer(r"font-family:\s*([^;]+);", body):
+    # @font-face has to name the family it is defining. Every other rule in
+    # the file must reach the family through a token.
+    without_faces = re.sub(r"@font-face\s*\{[^}]*\}", "", body)
+    for m in re.finditer(r"font-family:\s*([^;]+);", without_faces):
         val = m.group(1)
-        if "var(--font-" in val or "'Geist'" in val or "'Literata'" in val or "'Geist Mono'" in val:
+        if "var(--font-" in val:
             continue
         fails.append(f"styles.css: font-family {val.strip()} is not a token")
 
@@ -188,7 +206,9 @@ def check_tokens():
     # easiest way to fail AA without noticing.
     for m in re.finditer(r"(?:^|[;{\s])(?:color|fill):\s*var\(--ink-40\)", body):
         fails.append("styles.css: --ink-40 used as a text colour, it is 2.97:1 and rules only")
-    for m in re.finditer(r"(?:^|[;{\s])(?:color|fill):\s*rgb\(252 251 249 / 0\.(\d+)\)", body):
+    paper_triple = _triple("paper") or "255 255 255"
+    for m in re.finditer(r"(?:^|[;{\s])(?:color|fill):\s*rgb\("
+                         + re.escape(paper_triple) + r" / 0\.(\d+)\)", body):
         if int(m.group(1).ljust(2, "0")) < 55:
             near = body[max(0, m.start() - 200):m.start()]
             if "decorative-glyph-exempt" in near:
@@ -210,7 +230,8 @@ def check_staffing_claims():
     ]
     qualifiers = ["once that role is filled", "is hired", "we hire", "not hired", "will meet",
                   "will be", "will review", "not filled", "until our nursing lead", "we have not"]
-    for f in sorted(glob.glob(os.path.join(OUT, "*.html"))):
+    for f in sorted(f for f in glob.glob(os.path.join(OUT, "*.html"))
+                    if not os.path.basename(f).startswith("_")):
         page = os.path.basename(f)
         text = visible_text(open(f, encoding="utf-8").read())
         low = text.lower()
@@ -274,58 +295,83 @@ def _ratio(fg, bg):
 
 
 def check_contrast():
-    """Every text colour the site actually uses, measured against the surface
-    it is used on. tokens.css records ratios in a comment; a comment cannot
-    fail a build. This computes them from the hex values themselves, so
-    darkening a token by a shade cannot quietly drop a pair under 4.5:1."""
+    """Every text colour, measured against every surface it is set on.
+
+    The site alternates between four grounds, so a value is only safe if it
+    clears the floor on the darkest of them. Body text is held to 7:1 rather
+    than 4.5:1: this audience includes cataracts and a phone held up in Delhi
+    daylight. Computed from the hex values, so darkening a token by a shade
+    cannot quietly drop a pair under the floor.
+
+    --accent is deliberately not in the text list. It is a fill, and what is
+    checked for it is the label that sits on top of it.
+    """
     tokens = open(os.path.join(OUT, "assets", "tokens.css"), encoding="utf-8").read()
 
-    def hexof(name):
-        m = re.search(r"--" + name + r":\s*(#[0-9A-Fa-f]{6})", tokens)
-        if not m:
-            fails.append(f"tokens.css: --{name} is not a hex value any more")
-            return None
-        h = m.group(1).lstrip("#")
-        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    def colour(name):
+        """A token may be a hex value or an alpha of ink over a surface."""
+        m = re.search(r"--" + name + r":\s*#([0-9A-Fa-f]{6})", tokens)
+        if m:
+            h = m.group(1)
+            return ("hex", tuple(int(h[i:i + 2], 16) for i in (0, 2, 4)))
+        m = re.search(r"--" + name + r":\s*rgb\(([\d ]+) / ([0-9.]+)\)", tokens)
+        if m:
+            base = tuple(int(v) for v in m.group(1).split())
+            return ("alpha", (base, float(m.group(2))))
+        fails.append(f"tokens.css: --{name} is neither a hex value nor an alpha")
+        return None
 
-    def alpha(name):
-        m = re.search(r"--" + name + r":\s*rgb\(20 20 15 / ([0-9.]+)\)", tokens)
-        return float(m.group(1)) if m else None
-
-    paper, deep = hexof("paper"), hexof("paper-deep")
-    accent, withdrawn = hexof("accent"), hexof("substituted")
-    clay, on_accent = hexof("withdrawn"), hexof("on-accent")
-    if not all([paper, deep, accent, withdrawn, clay, on_accent]):
+    surfaces = {}
+    for name in ("paper", "paper-deep", "warm", "sand"):
+        c = colour(name)
+        if c and c[0] == "hex":
+            surfaces[name] = c[1]
+    if not surfaces:
         return
-    ink = (20, 20, 15)
 
-    def blend(a, bg):
-        return tuple(ink[i] * a + bg[i] * (1 - a) for i in range(3))
+    def resolve(tok, bg):
+        kind, val = tok
+        if kind == "hex":
+            return val
+        base, a = val
+        return tuple(base[i] * a + bg[i] * (1 - a) for i in range(3))
 
     pairs = []
-    for tok in ("ink-90", "ink-70", "ink-55"):
-        a = alpha(tok)
-        if a is None:
-            fails.append(f"tokens.css: --{tok} is no longer an alpha of ink")
+    for name in ("ink", "ink-90", "ink-70", "ink-55", "accent-ink",
+                 "withdrawn", "substituted"):
+        tok = colour(name)
+        if not tok:
             continue
-        pairs.append((f"--{tok} on paper", blend(a, paper), paper))
-        pairs.append((f"--{tok} on paper-deep", blend(a, deep), deep))
-    for name, fg in (("accent", accent), ("substituted", withdrawn), ("withdrawn", clay)):
-        pairs.append((f"--{name} on paper", fg, paper))
-        pairs.append((f"--{name} on paper-deep", fg, deep))
-    pairs.append(("--on-accent on accent", on_accent, accent))
-    pairs.append(("--ink on paper", ink, paper))
+        for sname, s_rgb in surfaces.items():
+            pairs.append((f"--{name} on {sname}", resolve(tok, s_rgb), s_rgb, 7.0))
+
+    # Fills carry a label rather than being one.
+    accent, on_accent = colour("accent"), colour("on-accent")
+    ink = colour("ink")
+    if accent and on_accent:
+        pairs.append(("--on-accent on --accent", on_accent[1], accent[1], 4.5))
+    if ink and on_accent:
+        pairs.append(("--on-accent on --ink", on_accent[1], ink[1], 4.5))
+
+    # The three lit values exist only for the ink ground, so they are measured
+    # against it and against nothing else. A value derived to read on paper is
+    # around 2:1 here, which is the mistake they were added to stop.
+    if ink:
+        for name in ("withdrawn-lit", "substituted-lit", "accent-lit"):
+            tok = colour(name)
+            if tok:
+                pairs.append((f"--{name} on --ink", tok[1], ink[1], 7.0))
 
     worst = None
-    for label, fg, bg in pairs:
+    for label, fg, bg, need in pairs:
         r = _ratio(fg, bg)
         if worst is None or r < worst[1]:
             worst = (label, r)
-        if r < 4.5:
-            fails.append(f"contrast: {label} is {r:.2f}:1, AA body text needs 4.5:1")
+        if r < need:
+            fails.append(f"contrast: {label} is {r:.2f}:1, this site holds it to {need}:1")
     if worst:
-        notes.append(f"contrast: {len(pairs)} pairs measured, tightest {worst[0]} at {worst[1]:.2f}:1")
-
+        notes.append(f"contrast: {len(pairs)} pairs measured, tightest {worst[0]} "
+                     f"at {worst[1]:.2f}:1")
 
 ALLOWED_ORIGINS = {
     "https://kinvisit.in",      # our own canonical
@@ -340,7 +386,8 @@ def check_third_parties():
     without a decision. The cookie policy states there are none; this is what
     keeps that sentence true. Adding an origin here means adding it to
     /cookies and to the CSP in netlify.toml as well."""
-    for f in sorted(glob.glob(os.path.join(OUT, "*.html"))):
+    for f in sorted(f for f in glob.glob(os.path.join(OUT, "*.html"))
+                    if not os.path.basename(f).startswith("_")):
         src = open(f, encoding="utf-8").read()
         page = os.path.basename(f)
         for tag in re.findall(r"<(?:iframe|embed|object)\b[^>]*>", src, re.I):
@@ -367,7 +414,8 @@ def check_verification_claims():
     anyone_verified = any(c.get("policeVerified") for c in roster)
     if anyone_verified:
         return
-    for f in sorted(glob.glob(os.path.join(OUT, "*.html"))):
+    for f in sorted(f for f in glob.glob(os.path.join(OUT, "*.html"))
+                    if not os.path.basename(f).startswith("_")):
         text = visible_text(open(f, encoding="utf-8").read()).lower()
         for m in re.finditer(r"police (?:verification|verified)", text):
             window = text[max(0, m.start() - 200):m.end() + 200]
@@ -395,7 +443,8 @@ def check_legal_pages():
             fails.append(f"index.html: no link to {href}, it has to be reachable from every page")
 
     # Every form that collects personal data needs a real tick, not small print.
-    for f in sorted(glob.glob(os.path.join(OUT, "*.html"))):
+    for f in sorted(f for f in glob.glob(os.path.join(OUT, "*.html"))
+                    if not os.path.basename(f).startswith("_")):
         src = open(f, encoding="utf-8").read()
         for form in re.findall(r"<form\b[\s\S]*?</form>", src):
             if 'data-netlify="true"' not in form:
@@ -422,7 +471,8 @@ def check_photographs():
     manifest = json.load(open(manifest_path, encoding="utf-8"))
 
     seen = 0
-    for f in sorted(glob.glob(os.path.join(OUT, "*.html"))):
+    for f in sorted(f for f in glob.glob(os.path.join(OUT, "*.html"))
+                    if not os.path.basename(f).startswith("_")):
         page = os.path.basename(f)
         src = open(f, encoding="utf-8").read()
         for img in re.findall(r"<img\b[^>]*>", src):
@@ -499,7 +549,8 @@ def check_attendant_claims():
     notes.append("attendant: no clinically qualified companion on the roster, "
                  "so qualified-attendant copy is blocked")
 
-    for f in sorted(glob.glob(os.path.join(OUT, "*.html"))):
+    for f in sorted(f for f in glob.glob(os.path.join(OUT, "*.html"))
+                    if not os.path.basename(f).startswith("_")):
         text = visible_text(open(f, encoding="utf-8").read()).lower()
         for pattern in QUALIFIED_ATTENDANT:
             for m in re.finditer(pattern, text):
@@ -516,7 +567,11 @@ def check_attendant_claims():
 
 
 def main():
-    files = sorted(glob.glob(os.path.join(OUT, "*.html")))
+    # Files beginning with an underscore are working documents: the temporary
+    # pages the suites write, and design previews that are not part of the
+    # site yet. They are not held to the site's rules until they are.
+    files = sorted(f for f in glob.glob(os.path.join(OUT, "*.html"))
+                   if not os.path.basename(f).startswith("_"))
     if not files:
         print("no html built")
         return 1

@@ -139,6 +139,17 @@
   var forms = document.querySelectorAll('[data-login]');
   if (!forms.length) return;
 
+  /* The counter overhead (portal-ui.js) listens for these and reflects them
+     on the board. It is presentation only, it is loaded before this file so
+     nothing is missed, and every announcement below is made at the moment
+     the thing it names actually happens. If that file is absent these are
+     events nobody hears, which is the intended failure. */
+  function announce(name, kind) {
+    document.dispatchEvent(new CustomEvent('kv:portal', {
+      detail: { state: name, kind: kind || null }
+    }));
+  }
+
   var unconfigured = document.getElementById('pt-unconfigured');
   if (!ready && unconfigured) {
     unconfigured.hidden = false;
@@ -146,8 +157,10 @@
       var btn = forms[f].querySelector('button[type="submit"]');
       if (btn) btn.disabled = true;
     }
+    announce('closed');
     return;
   }
+  announce('open');
 
   /* Already signed in? Do not make someone type a password they just used. */
   window.KVPortal.session().then(function (who) {
@@ -164,6 +177,8 @@
       error.hidden = false;
       submit.disabled = false;
       submit.textContent = submit.getAttribute('data-label');
+      form.classList.remove('is-busy');
+      announce('refused', kind);
     }
 
     submit.setAttribute('data-label', submit.textContent);
@@ -177,6 +192,8 @@
       error.hidden = true;
       submit.disabled = true;
       submit.textContent = 'Signing in';
+      form.classList.add('is-busy');
+      announce('checking', kind);
 
       client.auth.signInWithPassword({ email: email, password: password })
         .then(function (res) {
@@ -197,6 +214,7 @@
                   : 'That is a family account. Use the family form.');
               });
             }
+            announce('admitted', kind);
             window.location.href = window.KVPortal.home(role);
           });
         })

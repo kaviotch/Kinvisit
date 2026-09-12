@@ -57,6 +57,10 @@ def main():
     #    mode, and 110KB of client goes unshipped.
     parts = [
         "/* No project configured. portal.js opens the desk in local mode. */\n"
+        # The same line build.py writes into config.js. Without it the
+        # stylesheet still believes no script ran and the desk shows the
+        # notice saying it needs one, on top of a desk that works.
+        "document.documentElement.className += ' js';\n"
         "window.KV_CONFIG = { supabaseUrl: '', supabaseAnonKey: '' };",
         read("assets", "js", "report.js"),
         read("assets", "js", "portal.js"),

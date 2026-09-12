@@ -78,6 +78,13 @@ CASES = [
     ("portal.html", "M15 sign-in needs a script to work", [
         r'data-login="family"', r'data-login="companion"',
     ], []),
+    # M27. The counter dresses the page; it must not leave a control behind
+    # that only a script can work. Both of the ones it adds ship hidden, and
+    # the board is held down by a rule that depends on a class no script has
+    # set yet, so with scripts unreachable this is the plain form it was.
+    ("portal.html", "M27 adds no dead control", [
+        r'data-pt-peek(?:="")? hidden', r'data-pt-caps(?:="")? role="status" hidden',
+    ], []),
     ("records.html", "M15 body ships hidden and holds no record", [
         r'class="pt-body" hidden',
     ], [r'Sushila', r'Metformin', r'eGFR']),

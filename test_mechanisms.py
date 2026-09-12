@@ -153,8 +153,12 @@ CASES = [
     # the first version made on /record.
     ("record.html", 1440, 3000, r"""
   t('M20 rail present',            !!q('.hero-rail'));
-  t('M20 rail beside the text',    q('.hero-rail').getBoundingClientRect().left >
-                                   q('.hero-main').getBoundingClientRect().right - 1);
+  t('M20 rail sits under the text', q('.hero-rail').getBoundingClientRect().top >=
+                                    q('.hero-main').getBoundingClientRect().bottom - 1);
+  t('M20 rail is wider than prose', q('.hero-rail').getBoundingClientRect().width >=
+                                    q('.hero-main').getBoundingClientRect().width);
+  t('M20 rail is flush left',       Math.abs(q('.hero-rail').getBoundingClientRect().left -
+                                    q('.hero-main').getBoundingClientRect().left) < 2);
   t('M20 rail has four facts',     document.querySelectorAll('.hero-rail dt').length === 4);
   t('M20 pair not inside the grid',!q('.hero-main').contains(q('.hero-pair')));
   t('M20 pair keeps its width',    Math.round(q('.hero-pair').getBoundingClientRect().width) > 700);
@@ -221,6 +225,46 @@ CASES = [
   t('M15 every script same origin',srcs().filter(function (u) { return u.indexOf(location.origin + '/') !== 0; }).length === 0);
   t('M15 library is vendored',     srcs().filter(function (u) { return /vendor\/supabase/.test(u); }).length === 1);
   t('M15 no page scroll',          document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
+  t('M15 wordmark is drawn',       !!q('.pt-bar .brand svg') && !/\{WORDMARK\}/.test(copy()));
+
+  /* M27. The counter. */
+  t('M27 board present',           !!q('[data-pt-board]'));
+  t('M27 board is decorative',     q('[data-pt-board]').getAttribute('aria-hidden') === 'true');
+  t('M27 clock reads a time',      /^\d\d:\d\d$/.test(txt('[data-pt=clock]')));
+  t('M27 link is not a claim',     txt('[data-pt=link]') === 'Local');
+  t('M27 closed board says so',    txt('[data-pt=status]') === 'Closed');
+  t('M27 board state is closed',   q('[data-pt-board]').getAttribute('data-state') === 'closed');
+  t('M27 counter empty at rest',   txt('[data-pt=counter]') === '--');
+  q('#family-email').focus();
+  t('M27 focus lights counter 01', txt('[data-pt=counter]') === '01');
+  /* The build under test has no project behind it. Standing at a counter is
+     true and lights the number; the status must not start saying the portal
+     is doing something when it is closed. */
+  t('M27 closed stays closed',     txt('[data-pt=status]') === 'Closed');
+  q('#companion-email').focus();
+  t('M27 moving lights 02',        txt('[data-pt=counter]') === '02');
+
+  t('M27 peek revealed',           q('#family-password').parentNode.querySelector('[data-pt-peek]').offsetParent !== null);
+  t('M27 peek starts unpressed',   q('[data-pt-peek]').getAttribute('aria-pressed') === 'false');
+  q('[data-pt-peek]').click();
+  t('M27 peek unmasks',            q('#family-password').type === 'text');
+  t('M27 peek says hide',          q('[data-pt-peek]').textContent === 'Hide');
+  q('[data-pt-peek]').click();
+  t('M27 peek re-masks',           q('#family-password').type === 'password');
+  t('M27 caps note silent',        q('[data-pt-caps]').offsetParent === null);
+
+  t('M27 no tick when empty',      !q('#family-email').closest('.field').classList.contains('is-ok'));
+  q('#family-email').value = 'not an address';
+  q('#family-email').dispatchEvent(new Event('input'));
+  t('M27 no tick when malformed',  !q('#family-email').closest('.field').classList.contains('is-ok'));
+  q('#family-email').value = 'someone@example.com';
+  q('#family-email').dispatchEvent(new Event('input'));
+  t('M27 tick when it parses',     q('#family-email').closest('.field').classList.contains('is-ok'));
+
+  t('M27 counters are numbered',   q('[data-login=family]').getAttribute('data-counter') === '01' &&
+                                   q('[data-login=companion]').getAttribute('data-counter') === '02');
+  t('M27 numbers are decorative',  q('.pt-num').getAttribute('aria-hidden') === 'true');
+  t('M27 board invents no queue',  !/queue|now serving|waiting time|token/i.test(txt('[data-pt-board]')));
 """),
     ("records.html", 1200, 4000, r"""
   t('M15 records has a gate',      !!q('[data-gate="family"]'));
@@ -234,6 +278,11 @@ CASES = [
     # keystroke by keystroke, and that the sample marking survives until the
     # moment a companion types over it.
     ("desk.html", 1200, 6000, r"""
+  /* The stylesheet hides this behind a class that a script has to set, and
+     for a while nothing set it, so the desk told every companion it was
+     broken while working perfectly. */
+  t('M14 script ran',              document.documentElement.classList.contains('js'));
+  t('M14 nojs notice is silent',   q('.dk-nojs').offsetParent === null);
   t('M14 sheet rendered',          q('#dk-sheet').innerHTML.trim().length > 0);
   t('M14 sample banner shown',     /Sample. Not a real patient/.test(q('#dk-sheet').innerHTML));
   t('M14 asked rows seeded',       document.querySelectorAll('#dk-r-asked .dk-row').length === 2);

@@ -1,174 +1,157 @@
 /* ==========================================================================
    Kinvisit design tokens
-   A clinical document, published. The site is the quiet frame. The report is
-   the object.
 
-   This file is the only place a colour, a type size, a spacing value, or an
-   easing curve may be defined. Every contrast ratio below was measured, not
-   estimated. check.py will be extended to fail the build on any hardcoded
-   colour outside this file.
+   One typeface, four surfaces, one accent.
+
+   The previous system ran three families against each other: a sans for the
+   page, a serif for the report, a mono for every label. Scrolling changed
+   voice three times. The whole site is now set in Figtree, and the report
+   earns its document feel from a black header bar, a reference number and a
+   signed footer rather than from a different face.
+
+   This file is the only place a colour, a type size, a spacing value or an
+   easing curve may be defined. Every ratio below is computed by check.py from
+   these hex values, not estimated, and the floor for anything a person reads
+   is 7:1 rather than 4.5:1, because this audience includes cataracts and a
+   phone held up in Delhi daylight.
    ========================================================================== */
 
 :root {
 
   /* ----------------------------------------------------------- 1. COLOUR
-     Six values. Everything else is ink at an alpha, so the palette cannot
-     drift and a new colour cannot be introduced by accident. */
+     Four surfaces the page alternates between, and one red. */
 
-  --paper:        #FCFBF9;   /* near-white, a trace of warmth              */
-  --paper-deep:   #F4F1EB;   /* full-bleed background shifts only          */
-  --ink:          #14140F;   /* 17.86:1 on paper, 16.39:1 on paper-deep    */
-  --accent:       #1E4D52;   /* deep slate-teal. 9.07:1 on paper.
-                                Links and the primary CTA. Nothing else.   */
+  --paper:        #FFFFFF;   /* the base surface                           */
+  --paper-deep:   #CBDAE3;   /* the blue ground. Hero, coverage, pricing.  */
+  --warm:         #F3ECE0;   /* the light warm ground                      */
+  --sand:         #E4DCD1;   /* the deeper warm ground                     */
 
-  /* The medication semantics. These two exist so that seeing them means
-     something. They appear in the report and the medication table and in no
-     other place on the site. Do not borrow them for a success state, a flag,
-     a tick, a chart, or a hover. */
-  --withdrawn:    #8A4034;   /* muted clay.  7.09:1 on paper               */
-  --substituted:  #3F5F3A;   /* muted moss.  6.98:1 on paper               */
+  --ink:          #23292B;   /* blue-black. 14.75:1 on paper.              */
 
-  /* Derived from --ink. Not new colours. Ratios are against --paper. */
-  --ink-90:  rgb(20 20 15 / 0.92);  /* 14.64:1  headlines                  */
-  --ink-70:  rgb(20 20 15 / 0.72);  /*  7.24:1  body                       */
-  --ink-55:  rgb(20 20 15 / 0.64);  /*  5.47:1  secondary text, passes AA  */
-  --ink-40:  rgb(20 20 15 / 0.45);  /*  2.97:1  never text. Rules and marks
-                                        only, and check.py enforces that.    */
-  --ink-20:  rgb(20 20 15 / 0.20);  /*          "not prescribed" cells     */
-  --hairline: rgb(20 20 15 / 0.08); /*          the only border on the site */
+  /* The red is the lit digits of the token board in the OPD photograph on
+     this site, sampled from the file. It is a FILL: white on it measures
+     5.89:1, which carries a button label, and it never carries small text
+     itself. Anything red and small uses --accent-ink. */
+  --accent:       #C3202F;
+  --accent-ink:   #831520;   /* 7.01:1 on the blue ground                  */
+  --on-accent:    #FFFFFF;
 
-  /* Ink on the accent, for the primary CTA label. 9.07:1. */
-  --on-accent: #FCFBF9;
+  /* The medication semantics. They appear in the report and nowhere else.
+     Do not borrow them for a success state, a tick, a chart or a hover. */
+  --withdrawn:    #75281A;   /* 7.07:1 on the blue ground                  */
+  /* The same two semantics inverted, for the dark panel. A red derived to
+     read on paper is 1.46:1 on ink, which is a medication state nobody can
+     see: the medication table sits on the dark panel on the homepage. */
+  --withdrawn-lit:   #E9A397;   /* 7.13:1 on --ink                         */
+  --substituted-lit: #7AC487;   /* 7.08:1 on --ink                         */
+
+  /* The accent has the same problem wherever it is set on ink: --accent is
+     2.51:1 there, which is a lit digit nobody can read. This is the same red
+     lifted until it clears the floor, and it is used only on the ink ground
+     of a board. On paper, use --accent as a fill or --accent-ink as text. */
+  --accent-lit:      #FF977F;   /* 7.01:1 on --ink                         */
+  --substituted:  #214A28;   /* 7.06:1 on the blue ground                  */
+
+  /* Text greys are solid values rather than alphas of ink. An alpha that
+     passes on white fails on the blue ground, and the site alternates
+     between them: 0.80 of ink measures 8.71:1 on paper and 6.09:1 on the
+     ground. These two clear 7:1 on all four surfaces. */
+  --ink-90:  #23292B;        /* headlines                                  */
+  --ink-70:  #3C4347;        /* body and secondary. 7.04:1 on the ground.  */
+  --ink-55:  #3C4347;        /* captions and labels, same floor            */
+
+  /* Alphas below are marks, never text, and check.py enforces that. */
+  --ink-40:  rgb(35 41 43 / 0.45);
+  --ink-20:  rgb(35 41 43 / 0.18);
+  --hairline: rgb(35 41 43 / 0.14);
 
 
   /* -------------------------------------------------------------- 2. TYPE
-     Three families, on purpose. The report is set in a different family from
-     the site so that it reads as a printed clinical document embedded in a
-     page, rather than as another styled section of the page. That contrast
-     is the design.
+     One family. The second is a dot-matrix face used only where the design
+     is quoting a literal LED board. */
 
-     Self-hosted, latin subset, preloaded for the display face only. */
+  --font-ui:      'Figtree', ui-sans-serif, system-ui, sans-serif;
+  --font-report:  'Figtree', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'Figtree', ui-sans-serif, system-ui, sans-serif;
+  --font-led:     'Geist Mono', ui-monospace, SFMono-Regular, monospace;
 
-  --font-ui:     'Geist', 'Geist Fallback', sans-serif;
-  --font-report: 'Literata', 'Literata Fallback', serif;
-  --font-mono:   'Geist Mono', 'Geist Mono Fallback', monospace;
-
-  /* Weight. 400 and 500 exist. Nothing else does. Emphasis comes from size
-     and space, never from weight. */
+  /* Figtree is variable from 300 to 900. Four weights are used: 300 for the
+     light half of a two-weight headline, 400 for reading, 600 for labels and
+     small headings, 800 for the heavy half and for figures. */
+  --w-light:   300;
   --w-regular: 400;
-  --w-medium:  500;
+  --w-medium:  600;
+  --w-bold:    800;
 
-  /* Five steps, and nothing between them.
-     The three display steps contract at narrow viewports, below. The two
-     reading steps never change, because 18px is the reading size and 13px is
-     the caption size at every width. */
-  --t-display: 88px;   /* the hero headline, and nothing else on the page  */
-  --t-head:    52px;   /* section headlines                                */
-  --t-sub:     32px;   /* the largest statistic, the founder quote         */
-  --t-body:    18px;   /* all prose                                        */
-  --t-caption: 13px;   /* eyebrows, captions, mono labels, the trust line  */
+  /* Fluid, and nothing between the steps. Nothing renders below 14px. */
+  --t-caption: 14px;
+  --t-body:    clamp(17px, 0.4vw + 15.7px, 18px);
+  --t-sub:     clamp(19px, 0.7vw + 16.8px, 22px);
+  --t-head:    clamp(27px, 2.9vw + 16.6px, 40px);
+  --t-display: clamp(36px, 5.2vw + 15.5px, 64px);
+  --t-quote:   var(--t-sub);
 
-  --lh-display: 0.98;
-  --lh-head:    1.04;
-  --lh-sub:     1.2;
+  --lh-caption: 1.55;
   --lh-body:    1.6;
-  --lh-caption: 1.4;
+  --lh-sub:     1.45;
+  --lh-head:    1.13;
+  --lh-display: 1.05;
 
-  --track-display: -0.03em;   /* the brief's figure, at large sizes only   */
-  --track-head:    -0.025em;
-  --track-sub:     -0.015em;
+  /* Never tighter than -0.035em, and only on the two display steps. Tight
+     tracking on small text is the loudest tell of a page nobody set. */
+  --track-display: -0.035em;
+  --track-head:    -0.03em;
+  --track-sub:     -0.01em;
   --track-body:     0em;
-  --track-caption:  0.1em;    /* mono labels, uppercase                    */
+  --track-caption:  0.14em;   /* the two-weight eyebrow, uppercase */
 
-  --measure: 68ch;            /* maximum line length for prose             */
-
-  /* The one size outside the five-step scale. The brief names it directly
-     for the founder quote, and it is the only element that uses it. */
-  --t-quote: 40px;
+  --measure: 62ch;
 
 
-  /* ------------------------------------------------------------- 3. SPACE
-     Gappy on purpose. If a gap feels like a compromise between two of these,
-     it is the wrong gap. */
+  /* ------------------------------------------------------------- 3. SPACE */
 
   --s-1:   4px;
   --s-2:   8px;
   --s-3:  16px;
-  --s-4:  32px;
-  --s-5:  64px;
-  --s-6:  96px;
-  --s-7: 144px;
-  --s-8: 200px;
+  --s-4:  26px;
+  --s-5:  40px;
+  --s-6:  62px;
+  --s-7:  78px;
+  --s-8: 104px;
 
-  /* Section rhythm. Sections do not all breathe the same way: the problem
-     section is slow and heavy, pricing is tight and quick. Picking one of
-     these three per section is what stops the page reading as a template. */
-  --sect-tight: var(--s-6);   /*  96px  pricing, the FAQ                   */
-  --sect-base:  var(--s-7);   /* 144px  most sections                      */
-  --sect-slow:  var(--s-8);   /* 200px  the problem, the report            */
+  --sect-tight: var(--s-7);
+  --sect-base:  var(--s-7);
+  --sect-slow:  var(--s-8);
 
-  --gutter: var(--s-4);       /* 32px, the page edge                       */
-  --col:   1120px;            /* the text column. Three things break it.   */
+  --gutter: var(--s-5);
+  --col:   1180px;
 
 
   /* ------------------------------------------------------------ 4. SHAPE
-     Square. A scanned document does not have rounded corners. The only
-     radius on the site is the sheet the report sits on. */
+     Rounded, and lifted on a hard offset rather than a blur. A blurred
+     shadow is a light source; a hard offset is a sheet of paper sitting on
+     another sheet, which is what these are. */
 
-  --radius:       0;
-  --radius-paper: 2px;
-
-  /* The one permitted border. There are no box-shadows on this site except
-     the single lift under the report sheet, which is what makes it read as
-     paper on a surface. */
+  --radius:       12px;
+  --radius-paper: 10px;
+  --radius-pill:  999px;
   --rule: 1px solid var(--hairline);
+  --lift: 7px 7px 0 rgb(35 41 43 / 0.10);
+  --lift-sm: 5px 5px 0 rgb(35 41 43 / 0.09);
 
 
-  /* ----------------------------------------------------------- 5. MOTION
-     One orchestrated load with staggered reveals. Scroll reveals on the
-     report and the medication table only. Everything else is static. */
+  /* ----------------------------------------------------------- 5. MOTION */
 
-  --dur:  250ms;
-  --ease: cubic-bezier(0.22, 0.61, 0.20, 1);   /* decisive, then settles   */
-  --stagger: 60ms;                              /* between load reveals    */
+  --dur:  220ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --stagger: 40ms;
 }
 
 
-/* ---------------------------------------------------------------- 6. SCALE
-   The display steps contract as the viewport narrows. The reading steps do
-   not. There are still exactly five sizes at any given width. */
-
-@media (max-width: 999px) {
-  :root {
-    --t-display: 60px;
-    --t-head:    40px;
-    --t-sub:     26px;
-    --t-quote:   30px;
-    --gutter:    var(--s-4);
-    --sect-tight: var(--s-5);   /*  64px */
-    --sect-base:  var(--s-6);   /*  96px */
-    --sect-slow:  112px;
-  }
+@media (max-width: 767px) {
+  :root { --gutter: 20px; --sect-tight: 56px; --sect-base: 56px; --sect-slow: 64px; }
 }
-
-@media (max-width: 599px) {
-  :root {
-    --t-display: 40px;
-    --t-head:    28px;
-    --t-sub:     22px;
-    --t-quote:   24px;
-    --gutter:    20px;
-    --sect-slow: var(--s-6);    /*  96px */
-  }
-}
-
-
-/* --------------------------------------------------------- 7. MOTION, OFF
-   Not a slower animation. No animation. */
 
 @media (prefers-reduced-motion: reduce) {
-  :root {
-    --dur: 1ms;
-    --stagger: 0ms;
-  }
+  :root { --dur: 1ms; --stagger: 0ms; }
 }
