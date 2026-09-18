@@ -1,109 +1,115 @@
 /* ==========================================================================
-   Kinvisit design tokens
+   Kinvisit design tokens. "The Record".
 
-   One typeface, four surfaces, one accent.
+   Cool paper, forest ink, one amber highlighter.
 
-   The previous system ran three families against each other: a sans for the
-   page, a serif for the report, a mono for every label. Scrolling changed
-   voice three times. The whole site is now set in Figtree, and the report
-   earns its document feel from a black header bar, a reference number and a
-   signed footer rather than from a different face.
+   The product is a written record, and the one thing a family does with a
+   record is find the line that mattered. So the only accent on the site is a
+   highlighter: it marks that line, and nothing else. Buttons and links are
+   the forest ink, not a second accent.
 
-   This file is the only place a colour, a type size, a spacing value or an
-   easing curve may be defined. Every ratio below is computed by check.py from
-   these hex values, not estimated, and the floor for anything a person reads
-   is 7:1 rather than 4.5:1, because this audience includes cataracts and a
-   phone held up in Delhi daylight.
+   This file is the only place a colour, a size, a spacing value or an easing
+   curve may be defined. Every ratio below is computed by check.py from these
+   hex values, in both themes, not estimated. The floor for anything a person
+   reads is 7:1 rather than 4.5:1, because this audience includes cataracts
+   and a phone held up in Delhi daylight.
    ========================================================================== */
 
 :root {
+  color-scheme: light dark;
 
   /* ----------------------------------------------------------- 1. COLOUR
-     Four surfaces the page alternates between, and one red. */
+     Three surfaces, one ink, one forest, one highlighter. */
 
-  --paper:        #FFFFFF;   /* the base surface                           */
-  --paper-deep:   #CBDAE3;   /* the blue ground. Hero, coverage, pricing.  */
-  --warm:         #F3ECE0;   /* the light warm ground                      */
-  --sand:         #E4DCD1;   /* the deeper warm ground                     */
+  --paper:        #F2F3EF;   /* the page. Cool, not cream.                 */
+  --sheet:        #FFFFFF;   /* anything lifted off the page: the report,
+                                cards, forms                               */
+  --paper-deep:   #E6E9E3;   /* the sunk ground behind a section           */
 
-  --ink:          #23292B;   /* blue-black. 14.75:1 on paper.              */
-
-  /* The red is the lit digits of the token board in the OPD photograph on
-     this site, sampled from the file. It is a FILL: white on it measures
-     5.89:1, which carries a button label, and it never carries small text
-     itself. Anything red and small uses --accent-ink. */
-  --accent:       #C3202F;
-  --accent-ink:   #831520;   /* 7.01:1 on the blue ground                  */
-  --on-accent:    #FFFFFF;
-
-  /* The medication semantics. They appear in the report and nowhere else.
-     Do not borrow them for a success state, a tick, a chart or a hover. */
-  --withdrawn:    #75281A;   /* 7.07:1 on the blue ground                  */
-  /* The same two semantics inverted, for the dark panel. A red derived to
-     read on paper is 1.46:1 on ink, which is a medication state nobody can
-     see: the medication table sits on the dark panel on the homepage. */
-  --withdrawn-lit:   #E9A397;   /* 7.13:1 on --ink                         */
-  --substituted-lit: #7AC487;   /* 7.08:1 on --ink                         */
-
-  /* The accent has the same problem wherever it is set on ink: --accent is
-     2.51:1 there, which is a lit digit nobody can read. This is the same red
-     lifted until it clears the floor, and it is used only on the ink ground
-     of a board. On paper, use --accent as a fill or --accent-ink as text. */
-  --accent-lit:      #FF977F;   /* 7.01:1 on --ink                         */
-  --substituted:  #214A28;   /* 7.06:1 on the blue ground                  */
+  --ink:          #14231D;   /* forest near-black. 14.63:1 on paper.       */
 
   /* Text greys are solid values rather than alphas of ink. An alpha that
-     passes on white fails on the blue ground, and the site alternates
-     between them: 0.80 of ink measures 8.71:1 on paper and 6.09:1 on the
-     ground. These two clear 7:1 on all four surfaces. */
-  --ink-90:  #23292B;        /* headlines                                  */
-  --ink-70:  #3C4347;        /* body and secondary. 7.04:1 on the ground.  */
-  --ink-55:  #3C4347;        /* captions and labels, same floor            */
+     passes on the sheet fails on the sunk ground. These clear 7:1 on all
+     three surfaces. */
+  --ink-90:  #14231D;        /* headlines                                  */
+  --ink-70:  #3B4A43;        /* body and secondary. 7.62:1 on the sunk.    */
+  --ink-55:  #3B4A43;        /* captions and labels, same floor            */
 
   /* Alphas below are marks, never text, and check.py enforces that. */
-  --ink-40:  rgb(35 41 43 / 0.45);
-  --ink-20:  rgb(35 41 43 / 0.18);
-  --hairline: rgb(35 41 43 / 0.14);
+  --ink-40:   rgb(20 35 29 / 0.40);
+  --ink-20:   rgb(20 35 29 / 0.18);
+  --hairline: rgb(20 35 29 / 0.14);
+
+  /* The forest is a FILL: the primary button, the report letterhead and the
+     two banded sections. Paper on it measures 10.94:1. */
+  --accent:       #1E3B2F;
+  --accent-ink:   #1E3B2F;   /* links and small forest text on paper       */
+  --on-accent:    #F2F3EF;
+  --forest:       #1E3B2F;
+  --on-forest:    #F2F3EF;   /* 10.94:1 */
+  --on-forest-2:  #C9D6CE;   /* 8.13:1, secondary text on the band         */
+  --forest-rule:  rgb(242 243 239 / 0.22);
+  --forest-line:  rgb(242 243 239 / 0.40);
+
+  /* The highlighter. Painted behind ink, never used as a text colour. Ink on
+     it measures 9.70:1. */
+  --mark:         #F4C04E;
+  --on-mark:      #14231D;
+  --mark-top:     58%;       /* where the stroke starts on a line of type  */
+
+  /* The medication semantics. They appear in the report and the medication
+     tables and nowhere else. Do not borrow them for a success state, a tick,
+     a chart or a hover. */
+  --withdrawn:    #8A2A1B;   /* 7.06:1 on the sunk ground                  */
+  --substituted:  #1B5230;   /* 7.46:1 on the sunk ground                  */
+
+  /* The same semantics lifted for the forest band, where the compounding
+     table sits. A red derived to read on paper is unreadable on forest. */
+  --withdrawn-lit:   #F7B9AD;   /* 7.26:1 on --forest                      */
+  --substituted-lit: #9ED9AE;   /* 7.54:1 on --forest                      */
+  --accent-lit:      #F4C04E;   /* 7.26:1 on --forest                      */
 
 
   /* -------------------------------------------------------------- 2. TYPE
-     One family. The second is a dot-matrix face used only where the design
-     is quoting a literal LED board. */
+     One family for everything a person reads. The mono appears only where a
+     value is quoted rather than written: a reference, a dose, a time. */
 
-  --font-ui:      'Figtree', ui-sans-serif, system-ui, sans-serif;
-  --font-report:  'Figtree', ui-sans-serif, system-ui, sans-serif;
-  --font-mono:    'Figtree', ui-sans-serif, system-ui, sans-serif;
-  --font-led:     'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+  --font-ui:      'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-report:  'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  --font-led:     'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  /* Figtree is variable from 300 to 900. Four weights are used: 300 for the
-     light half of a two-weight headline, 400 for reading, 600 for labels and
-     small headings, 800 for the heavy half and for figures. */
-  --w-light:   300;
+  /* Schibsted Grotesk is variable from 400 to 900. Five weights are used:
+     400 for reading, 500 for values, 600 for labels, 700 for headings, 800
+     for the display line and for figures. */
   --w-regular: 400;
-  --w-medium:  600;
-  --w-bold:    800;
+  --w-medium:  500;
+  --w-semi:    600;
+  --w-bold:    700;
+  --w-heavy:   800;
 
   /* Fluid, and nothing between the steps. Nothing renders below 14px. */
   --t-caption: 14px;
-  --t-body:    clamp(17px, 0.4vw + 15.7px, 18px);
+  --t-small:   15.5px;
+  --t-body:    clamp(17px, 0.3vw + 16px, 18px);
   --t-sub:     clamp(19px, 0.7vw + 16.8px, 22px);
-  --t-head:    clamp(27px, 2.9vw + 16.6px, 40px);
-  --t-display: clamp(36px, 5.2vw + 15.5px, 64px);
-  --t-quote:   var(--t-sub);
+  --t-head:    clamp(30px, 2.6vw + 20px, 48px);
+  --t-display: clamp(38px, 4.4vw + 20px, 64px);
+  --t-figure:  clamp(64px, 8vw + 20px, 128px);
+  --t-quote:   clamp(22px, 1.2vw + 17px, 28px);
 
-  --lh-caption: 1.55;
+  --lh-caption: 1.5;
   --lh-body:    1.6;
-  --lh-sub:     1.45;
-  --lh-head:    1.13;
-  --lh-display: 1.05;
+  --lh-sub:     1.4;
+  --lh-head:    1.08;
+  --lh-display: 1.02;
 
-  /* Never tighter than -0.035em, and only on the two display steps. Tight
-     tracking on small text is the loudest tell of a page nobody set. */
+  /* Tight tracking on the two display steps only. */
   --track-display: -0.035em;
-  --track-head:    -0.03em;
+  --track-head:    -0.025em;
   --track-sub:     -0.01em;
   --track-body:     0em;
-  --track-caption:  0.14em;   /* the two-weight eyebrow, uppercase */
+  --track-caption:  0.08em;   /* the rare uppercase label */
 
   --measure: 62ch;
 
@@ -113,43 +119,83 @@
   --s-1:   4px;
   --s-2:   8px;
   --s-3:  16px;
-  --s-4:  26px;
+  --s-4:  24px;
   --s-5:  40px;
-  --s-6:  62px;
-  --s-7:  78px;
-  --s-8: 104px;
+  --s-6:  56px;
+  --s-7:  88px;
+  --s-8: 120px;
 
   --sect-tight: var(--s-7);
   --sect-base:  var(--s-7);
   --sect-slow:  var(--s-8);
 
-  --gutter: var(--s-5);
-  --col:   1180px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --col:   1240px;
+  --nav-h: 68px;
 
 
   /* ------------------------------------------------------------ 4. SHAPE
-     Rounded, and lifted on a hard offset rather than a blur. A blurred
-     shadow is a light source; a hard offset is a sheet of paper sitting on
-     another sheet, which is what these are. */
+     One rule, applied everywhere: anything you press is a pill, a surface is
+     14px, and a small surface inside a surface is 8px. Depth is a soft shadow
+     tinted to the ink, because these are sheets lifted off a desk. */
 
-  --radius:       12px;
-  --radius-paper: 10px;
+  --radius:       14px;
+  --radius-sm:    8px;
+  --radius-paper: 14px;
   --radius-pill:  999px;
   --rule: 1px solid var(--hairline);
-  --lift: 7px 7px 0 rgb(35 41 43 / 0.10);
-  --lift-sm: 5px 5px 0 rgb(35 41 43 / 0.09);
+  --lift:    0 1px 0 rgb(20 35 29 / 0.04), 0 24px 60px -24px rgb(20 35 29 / 0.28);
+  --lift-sm: 0 1px 0 rgb(20 35 29 / 0.04), 0 12px 32px -18px rgb(20 35 29 / 0.24);
 
 
   /* ----------------------------------------------------------- 5. MOTION */
 
   --dur:  220ms;
-  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
-  --stagger: 40ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --stagger: 80ms;
+}
+
+
+/* ------------------------------------------------------------- 6. DARK
+   The same system at night. Every value below is measured by check.py
+   against the dark surfaces, to the same 7:1 floor. The forest band keeps
+   its colour in both themes, so it reads as the same object. */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:        #0F1815;
+    --sheet:        #16221D;
+    --paper-deep:   #131D19;
+
+    --ink:          #E6EBE7;
+    --ink-90:       #E6EBE7;
+    --ink-70:       #A9B6AF;
+    --ink-55:       #A9B6AF;
+
+    --ink-40:   rgb(230 235 231 / 0.40);
+    --ink-20:   rgb(230 235 231 / 0.18);
+    --hairline: rgb(230 235 231 / 0.13);
+
+    --accent:       #DDEBE2;
+    --accent-ink:   #A7D3B6;
+    --on-accent:    #0F1815;
+
+    --mark:         #D9A93A;
+    --on-mark:      #0F1815;
+    --mark-top:     84%;     /* a thinner stroke, under the letters rather
+                                than behind them, so light type stays light */
+
+    --withdrawn:    #F2A596;
+    --substituted:  #8CD19E;
+
+    --lift:    0 24px 60px -24px rgb(0 0 0 / 0.60);
+    --lift-sm: 0 12px 32px -18px rgb(0 0 0 / 0.55);
+  }
 }
 
 
 @media (max-width: 767px) {
-  :root { --gutter: 20px; --sect-tight: 56px; --sect-base: 56px; --sect-slow: 64px; }
+  :root { --sect-tight: 56px; --sect-base: 64px; --sect-slow: 72px; --nav-h: 64px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

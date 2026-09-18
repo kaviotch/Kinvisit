@@ -338,12 +338,22 @@ def _read_mark():
 WORDMARK = _read_mark().replace('fill="#14140F"', 'fill="currentColor"')
 
 
+# Icons are Phosphor (MIT, assets/icons/LICENSE.txt), vendored as SVG files
+# and inlined here, never drawn by hand and never fetched from a CDN. They
+# take currentColor, so one file serves ink, paper and forest.
+_ICONS = {}
+
+
+def icon(name, cls="ico"):
+    if name not in _ICONS:
+        with open(os.path.join(OUT, "assets", "icons", f"{name}.svg"), encoding="utf-8") as f:
+            _ICONS[name] = re.sub(r"^<svg ", "", f.read().strip())
+    return (f'<svg class="{cls}" aria-hidden="true" focusable="false" '
+            + _ICONS[name])
+
+
 def wa_icon():
-    return (
-        '<svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
-        '<path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.5s-.5-1.3-.7-1.7-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4 5 5 0 0 0 3 .6 2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2z"/>'
-        "</svg>"
-    )
+    return icon("whatsapp-logo", "wa-icon")
 
 
 def nav(current):
@@ -480,7 +490,10 @@ def hero_rail(items, label="At a glance", shot=None, caption=None, stamp=None):
     rows = "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in items)
     pic = ""
     if shot:
-        mark = f'<span class="stamp">{stamp}</span>' if stamp else ""
+        # A stamp used to sit over the corner of this picture. A label laid
+        # over a photograph of a real place competes with the place, so the
+        # parameter is accepted and no longer drawn.
+        mark = ""
         cap = f'<figcaption>{caption}</figcaption>' if caption else ""
         # The picture is a column beside the text, not a block inside the
         # band. Beside it, it stretches to whatever height the text is, so
@@ -491,7 +504,7 @@ def hero_rail(items, label="At a glance", shot=None, caption=None, stamp=None):
             f'<dl>{rows}</dl></aside>')
 
 
-def photo_img(name):
+def photo_img(name, loading="lazy"):
     """Just the picture element, for places that supply their own frame."""
     alt = PHOTOS[name]
     size = PHOTO_SIZES[name]
@@ -501,7 +514,8 @@ def photo_img(name):
             f'<img src="/assets/photos/{name}.jpg"'
             f' srcset="/assets/photos/{name}.jpg 1x, /assets/photos/{name}@2x.jpg 2x"'
             f' width="{size["width"]}" height="{size["height"]}"'
-            f' loading="lazy" decoding="async" alt="{alt}">'
+            f' loading="{loading}" decoding="async" alt="{alt}"'
+            + (' fetchpriority="high"' if loading == "eager" else "") + '>'
             f'</picture>')
 
 
@@ -577,12 +591,13 @@ def page(path, title, desc, body, current=None, noindex=False, jsonld=None, og_t
   <meta name="twitter:description" content="{desc}">
   <meta name="twitter:image" content="{SITE}/assets/og-report.png">
 
-  <meta name="theme-color" content="#FCFBF9">
+  <meta name="theme-color" content="#F2F3EF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1815" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/assets/favicon.png" sizes="96x96">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 
-  <link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/schibsted-latin.woff2" as="font" type="font/woff2" crossorigin>
   <style>{CSS}</style>
 
 {plausible}{ld}
@@ -980,9 +995,10 @@ _TODAY_BODY = "".join(f"<p>{para}</p>" for para in C.TODAY_BODY)
 _TODAY_PRACTICAL = "".join(f"<li>{i}</li>" for i in C.TODAY_PRACTICAL)
 _FUTURE_STANDARD = "".join(f"<li>{i}</li>" for i in C.FUTURE_STANDARD)
 
-def who_block(photo=True, roster=True):
+def who_block(photo=True, roster=True, eyebrow=True):
+    label = '<p class="eyebrow">Who comes</p>' if eyebrow else ""
     return f"""<div class="prose">
-  <p class="eyebrow">Who comes</p>
+  {label}
   <h2>{C.TODAY_HEADING}</h2>
   <div class="lede">{_TODAY_BODY}</div>
 </div>
@@ -1007,13 +1023,15 @@ def who_block(photo=True, roster=True):
 
 
 def cta_block():
-    return f"""<section class="panel">
+    return f"""<section class="cta-sec">
   <div class="wrap">
-    <div class="prose">
-      <h2>Start with one visit.</h2>
-      <p class="lede">Delhi NCR today. Tell us the appointment and we will call you back the same
-        working day.</p>
-      <div class="btn-row" style="margin-top:26px">
+    <div class="cta-card">
+      <div>
+        <h2>Start with one visit.</h2>
+        <p>Delhi NCR today. Tell us the appointment and we will call you back the same
+          working day.</p>
+      </div>
+      <div class="btn-row">
         <a class="btn btn-dark" href="/book">Book the next appointment</a>
         <a class="btn btn-outline-light" href="{WA_LINK}" rel="noopener">{wa_icon()}WhatsApp us</a>
       </div>
@@ -1028,73 +1046,67 @@ def cta_block():
 def build_home():
     v4 = VISITS[3]
 
-    body = f"""<section class="hero">
+    body = f"""<section class="hero hero-home">
   <div class="wrap">
-    <p class="eyebrow" data-load>For families across the distance</p>
-    <h1 data-load>A photo of a prescription is not a medical record.</h1>
-    <p class="lede" data-load>Kinvisit attends your parent's hospital consultation in Delhi NCR,
-      writes down what was actually said, and sends you the report the same day.</p>
-    <div class="btn-row" data-load>
-      <a class="btn btn-primary" href="/record">See the report you would receive</a>
+    <div class="hero-main">
+      <p class="eyebrow" data-load>For families across the distance</p>
+      <h1 data-load>A photo of a prescription is not a <span class="hl">medical record.</span></h1>
+      <p class="lede" data-load>Kinvisit attends your parent's hospital consultation in Delhi NCR,
+        writes down what was actually said, and sends you the report the same day.</p>
+      <div class="btn-row" data-load>
+        <a class="btn btn-primary" href="/record">See the report you would receive {icon("arrow-right")}</a>
+        <a class="btn btn-ghost" href="/book">Book a visit</a>
+      </div>
     </div>
-    <p class="trust" data-load>
-      <span>{C.ATTENDS_SHORT}</span>
-      <span>Same-day written report</span>
-      <span>Delhi NCR</span>
-      <span>From <b>{M.rupees(3200)} a month</b></span>
-    </p>
+    <figure class="hero-art" data-load>
+      <div class="hero-art-main">{photo_img("opd-corridor", loading="eager")}</div>
+      <div class="hero-art-inset">{photo_img("report-on-desk")}</div>
+    </figure>
   </div>
 </section>
 
-<section class="tight">
+<section class="facts" aria-label="At a glance">
   <div class="wrap">
-    <div class="compare rv" data-reveal="compare">
-      <div>
-        <p class="cmp-label">What you get today</p>
-        <div class="wa-card">
-          <div class="wa-bubble">
-            <div class="wa-photo" role="img" aria-label="A blurred photograph of a prescription slip, too indistinct to read"></div>
-            <p class="wa-meta">IMG_4821 &middot; 9:42 PM</p>
-          </div>
-          <p class="wa-quote">&ldquo;Doctor said it's fine.&rdquo; Forwarded from Mum. Blurry, and
-            three weeks late.</p>
+    <dl>
+      <div><dt>Where</dt><dd>Delhi NCR, 26 hospitals listed</dd></div>
+      <div><dt>Who attends</dt><dd>{C.ATTENDS_RAIL}</dd></div>
+      <div><dt>You receive</dt><dd>A written record before midnight</dd></div>
+      <div><dt>From</dt><dd>{M.rupees(3200)} a month, no lock-in</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 style="max-width:18ch">What you get today, and what Kinvisit sends.</h2>
+    <div class="pair rv" data-reveal="compare">
+      <div class="today">
+        <blockquote>&ldquo;Doctor said it's fine.&rdquo;</blockquote>
+        <div>
+          <p>Forwarded from Mum. Blurry, and three weeks late.</p>
+          <p class="wa-meta">IMG_4821 &middot; 9:42 PM</p>
         </div>
       </div>
-      <div class="arrow-link" aria-hidden="true">
-        <span class="bar"></span>
-        <span class="txt">&#8595;</span>
-        <span class="bar"></span>
-      </div>
-      <div>
-        <p class="cmp-label">What Kinvisit sends</p>
-        <div class="report-card">
-          <div class="report-head"><span>Kinvisit &middot; Consultation report</span><span class="n">#04</span></div>
-          <dl style="margin:0">
-            <div class="report-row"><dt>Visit</dt><dd>11 June &middot; Orthopaedics OPD</dd></div>
-            <div class="report-row"><dt>Medication</dt><dd><span class="em">Oral anti-inflammatory withdrawn</span></dd></div>
-            <div class="report-row"><dt>Why</dt><dd>eGFR 58 recorded at the April renal panel</dd></div>
-            <div class="report-row"><dt>Substituted</dt><dd>Diclofenac gel, twice daily</dd></div>
-            <div class="report-row"><dt>Next visit</dt><dd>09 July &middot; reports carried</dd></div>
-          </dl>
-          <div class="report-foot">The surgeon had no access to the April renal panel. The record did.</div>
-        </div>
+      <div class="report-card">
+        <div class="report-head"><span>Kinvisit &middot; Consultation report</span><span class="n">#04</span></div>
+        <dl>
+          <div class="report-row"><dt>Visit</dt><dd>11 June &middot; Orthopaedics OPD</dd></div>
+          <div class="report-row"><dt>Medication</dt><dd><span class="em">Oral anti-inflammatory withdrawn</span></dd></div>
+          <div class="report-row"><dt>Why</dt><dd>eGFR 58 recorded at the April renal panel</dd></div>
+          <div class="report-row"><dt>Substituted</dt><dd><span class="sub">Diclofenac gel, twice daily</span></dd></div>
+          <div class="report-row"><dt>Next visit</dt><dd>09 July &middot; reports carried</dd></div>
+        </dl>
+        <div class="report-foot">The surgeon had no access to the April renal panel. <span class="hl">The record did.</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="slow">
+<section class="panel slow">
   <div class="wrap">
-    <div class="figure-split">
-      <div class="prose">
-        <p class="eyebrow">The problem</p>
-        <h2>The room is where care happens. Nobody is there for you.</h2>
-      </div>
-      {photo("opd-corridor", caption="An outpatient department in Delhi NCR on an ordinary "
-           "morning. Your parent is somewhere in this, holding the file.")}
-    </div>
+    <h2 style="max-width:22ch">The room is where care happens. Nobody is there for you.</h2>
 
-    <div class="stats stats-2">
+    <div class="stats stats-row">
       <div class="stat rv">
         <span class="num">62%</span>
         <p>of Indians over 60 live with at least one diagnosed chronic condition, and more than
@@ -1105,6 +1117,8 @@ def build_home():
         <p>live in a household with no adult child in it. There is nobody younger in the
           room.<sup>2</sup></p>
       </div>
+      <p class="kicker rv">The problem is not access to doctors. It is that an
+        eight minute consultation leaves behind nothing anyone can use afterwards.</p>
     </div>
 
     <div class="room rv" data-reveal="room">
@@ -1113,19 +1127,15 @@ def build_home():
         person who pays for it stands in the dashed one.</p>
     </div>
 
-    <div class="prose">
-      <p class="lede" style="color:var(--ink)">The problem is not access to doctors. It is that an
-        eight minute consultation leaves behind nothing anyone can use afterwards.</p>
-      <p class="fine" style="margin-top:26px">
-        <sup>1</sup> Longitudinal Ageing Study in India, Wave 1, 2017-18, n = 31,464 adults aged 60
-        and above. 37.6% reported no chronic condition, 30.3% one, and 32.1% two or more.
-        <br>
-        <sup>2</sup> Same survey, living-arrangement analysis, n = 30,370. 5.1% live alone, 19.5%
-        with a spouse and no children present, and 5.1% with others only. Both figures come from
-        peer-reviewed analyses of LASI published in BMC Geriatrics, 2023, and are set out with
-        their derivations on our <a href="/proof">research page</a>.
-      </p>
-    </div>
+    <p class="fine notes">
+      <sup>1</sup> Longitudinal Ageing Study in India, Wave 1, 2017-18, n = 31,464 adults aged 60
+      and above. 37.6% reported no chronic condition, 30.3% one, and 32.1% two or more.
+      <br>
+      <sup>2</sup> Same survey, living-arrangement analysis, n = 30,370. 5.1% live alone, 19.5%
+      with a spouse and no children present, and 5.1% with others only. Both figures come from
+      peer-reviewed analyses of LASI published in BMC Geriatrics, 2023, and are set out with
+      their derivations on our <a href="/proof">research page</a>.
+    </p>
   </div>
 </section>
 
@@ -1134,39 +1144,37 @@ def build_home():
 {M.ledger_band()}
 
 <section id="report" class="slow report-stage">
-  <div class="wrap wrap-wide">
-    <div class="figure-split">
-      <div class="prose">
-        <p class="eyebrow">What you actually receive</p>
-        <h2>One visit. Every word of it, written down.</h2>
-        <p class="lede">This is the whole deliverable, not a summary of it. Read it before you
-          decide anything else about us.</p>
-      </div>
-      {photo("report-on-desk", caption="The report as it arrives: a printed sheet a family can "
-           "carry into the next consultation.", cls="shot-object")}
-    </div>
-    <div class="prose">
-      <p style="margin-top:18px;color:var(--ink-soft)">Three steps, every time. The companion
-        arrives with your written questions, sits through the consultation and records what is
-        said, then reconciles the new prescription against every standing medicine before the
-        report reaches you the same day. They document and clarify. They never advise, and they
+  <div class="wrap rep-grid">
+    <aside class="rep-aside">
+      <h2>One visit. Every word of it, written down.</h2>
+      <p class="lede">This is the whole deliverable, not a summary of it. Read it before you
+        decide anything else about us.</p>
+      <ol class="rep-steps" aria-label="Three steps, every time">
+        <li>{icon("notebook")}<b>The companion arrives with your written questions</b></li>
+        <li>{icon("ear")}<b>Sits through the consultation and records what is said</b></li>
+        <li>{icon("list-checks")}<b>Reconciles the new prescription against every standing medicine
+          before the report reaches you the same day</b></li>
+      </ol>
+      <p class="rep-rule">They document and clarify. They never advise, and they
         never argue with your parent's doctor.</p>
+      {photo("questions-notebook", caption="What the family sent, written out the night before.")}
+    </aside>
+
+    <div class="rep-doc">
+      <p class="sample-note">Sample record. Illustrative, not a real patient.</p>
+      {M.annotation_toggle()}
+      <div class="rv" data-reveal="report">{render_visit(v4)}</div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="/assets/kinvisit-sample-report.pdf" download>{icon("download-simple")}Download this report as a PDF</a>
+        <a class="btn btn-ghost" href="/record">See all four visits</a>
+      </div>
     </div>
+  </div>
 
-    <p class="sample-note" style="margin-top:26px">Sample record. Illustrative, not a real patient.</p>
-
-    {M.annotation_toggle()}
-
-    <div class="rv" data-reveal="report">{render_visit(v4)}</div>
-
-    <div class="btn-row">
-      <a class="btn btn-ghost" href="/assets/kinvisit-sample-report.pdf" download>Download this report as a PDF</a>
-      <a class="btn btn-ghost" href="/record">See all four visits</a>
-    </div>
-
-    <div class="prose" style="margin-top:52px">
+  <div class="wrap rep-history">
+    <div class="prose">
       <h3>The same four visits, as one medication history</h3>
-      <p style="color:var(--ink-soft)">Each visit adds one dated row. This is what the fourth
+      <p>Each visit adds one dated row. This is what the fourth
         doctor was shown.</p>
     </div>
     <div class="rv" data-reveal="table">
@@ -1179,74 +1187,70 @@ def build_home():
   </div>
 </section>
 
-<section>
+<section class="tight">
   <div class="wrap">
-    <div class="prose">
-      <p class="eyebrow">Scope</p>
-      <h2>What the companion does, and does not, do.</h2>
-    </div>
-    <div style="margin-top:26px">{SCOPE_BLOCK}</div>
+    <h2>What the companion does, and does not, do.</h2>
+    <div style="margin-top:40px">{SCOPE_BLOCK}</div>
   </div>
 </section>
 
 <section class="sunk">
   <div class="wrap">
     <div class="prose">
-      <p class="eyebrow">After the room</p>
       <h2>The report is not the end of the visit.</h2>
       <p class="lede">Pick the thing you are actually worried about.</p>
     </div>
-    <div style="margin-top:26px">{M.escalation()}</div>
+    <div style="margin-top:40px">{M.escalation()}</div>
   </div>
 </section>
 
-<section id="who">
+<section id="who" class="slow">
   <div class="wrap">
-    {who_block(photo=False, roster=False)}
+    {who_block(photo=False, roster=False, eyebrow=False)}
+    <div class="who-quote">
+      <div class="quote">
+        <blockquote>&ldquo;My grandmother saw a doctor twice a month for years. The only report we
+          ever got was: the doctor said it's fine.&rdquo;</blockquote>
+        <cite>Kunal Jain, Founder &middot; <a href="/about">Read the full story</a></cite>
+      </div>
+    </div>
   </div>
 </section>
 
 {M.compounding_scrubber()}
 
-<section id="pricing" class="tight">
+<section id="pricing" class="sunk">
   <div class="wrap">
-    <div class="prose">
-      <p class="eyebrow">Pricing</p>
-      <h2>You are buying the file, not the errand.</h2>
-      <p class="lede">A single visit gets you one transcript. The monthly plan maintains the
-        record, which is the thing that catches what a single room cannot.</p>
+    <p class="eyebrow">Pricing</p>
+    <h2>You are buying the file, not the errand.</h2>
+    <div class="price-grid">
+      <div class="plan-main">
+        <span class="ps-l">a month, with the file maintained</span>
+        <span class="ps-n">{M.rupees(3200)}</span>
+        <p>A single visit gets you one transcript. The monthly plan maintains the
+          record, which is the thing that catches what a single room cannot.</p>
+        <a class="btn btn-primary" href="/book">Book a visit</a>
+      </div>
+      <div class="plan-rest">
+        <div class="plan-row"><span class="ps-l">one visit, one report</span><span class="ps-n">{M.rupees(2200)}</span></div>
+        <div class="plan-row"><span class="ps-l">a month, two visits</span><span class="ps-n">{M.rupees(5400)}</span></div>
+        {GUARANTEE_BLOCK}
+        <p class="fine">No setup fee, no lock-in, and no commission from
+          hospitals or labs. <a href="/pricing">Full pricing, and what happens if we miss</a>.</p>
+      </div>
     </div>
-    <div style="margin-top:26px">{GUARANTEE_BLOCK}</div>
-    <div class="price-strip">
-      <div><span class="ps-n">{M.rupees(2200)}</span><span class="ps-l">one visit, one report</span></div>
-      <div class="ps-feature"><span class="ps-n">{M.rupees(3200)}</span><span class="ps-l">a month, with the file maintained</span></div>
-      <div><span class="ps-n">{M.rupees(5400)}</span><span class="ps-l">a month, two visits</span></div>
-    </div>
-    <p class="fine" style="margin-top:14px">No setup fee, no lock-in, and no commission from
-      hospitals or labs. <a href="/pricing">Full pricing, and what happens if we miss</a>.</p>
-    <div style="margin-top:52px">{ATTENDANT_BLOCK}</div>
+    <div class="attendant">{ATTENDANT_BLOCK}</div>
   </div>
 </section>
 
-<section class="panel slow">
-  <div class="wrap">
-    <div class="quote">
-      <blockquote>&ldquo;My grandmother saw a doctor twice a month for years. The only report we
-        ever got was: the doctor said it's fine.&rdquo;</blockquote>
-      <cite>Kunal Jain, Founder &middot; <a href="/about">Read the full story</a></cite>
-    </div>
-  </div>
-</section>
-
-<section class="tight">
-  <div class="wrap">
+<section>
+  <div class="wrap faq-grid">
     <div class="prose">
-      <p class="eyebrow">FAQ</p>
       <h2>What families ask first.</h2>
+      <p style="margin-top:20px"><a href="/faq">All twelve questions</a>, or
+        <a href="/conversations">the three conversations families find hardest</a>.</p>
     </div>
-    <div class="prose">{faq_block(FAQ_ITEMS[:6])}</div>
-    <p class="prose" style="margin-top:20px"><a href="/faq">All twelve questions</a>, or
-      <a href="/conversations">the three conversations families find hardest</a>.</p>
+    <div>{faq_block(FAQ_ITEMS[:6])}</div>
   </div>
 </section>
 
@@ -1288,15 +1292,6 @@ def build_home():
         body,
         current=None,
         jsonld=jsonld,
-        rail=hero_rail(shot="opd-corridor",
-        caption="An outpatient department in Delhi NCR on an ordinary morning.",
-        stamp="Thursday 10:40 &middot; Room 5",
-        items=[
-            ("Where", "Delhi NCR, 26 hospitals listed"),
-            ("Who attends", C.ATTENDS_RAIL),
-            ("You receive", "A written record before midnight"),
-            ("From", f"{M.rupees(3200)} a month, no lock-in"),
-        ]),
     )
 
 

@@ -151,8 +151,8 @@ def check_tokens():
     notes.append(f"tokens: {len(declared)} custom properties declared")
 
     palette = re.findall(
-        r"--(?:paper|paper-deep|warm|sand|ink|accent|accent-ink|withdrawn|substituted|"
-        r"on-accent):\s*(#[0-9A-Fa-f]{6})", tokens)
+        r"--(?:paper|sheet|paper-deep|ink|accent|accent-ink|forest|mark|withdrawn|substituted|"
+        r"on-accent):\s*(#[0-9A-Fa-f]{6})", tokens.split("@media")[0])
     if len(set(palette)) > 10:
         fails.append(f"tokens.css declares {len(set(palette))} literal colours, the system "
                      f"allows 10: {sorted(set(palette))}")
@@ -186,12 +186,11 @@ def check_tokens():
             fails.append(f"styles.css: colour literal rgb({val}) is not an alpha of "
                          f"ink or paper ({' or '.join(anchors)})")
 
-    # Figtree is variable 300 to 900. Four weights are used and no others:
-    # 300 light, 400 reading, 600 labels, 800 headlines and figures.
-    for m in re.finditer(r"font-weight:\s*(\d+)", body):
-        if m.group(1) not in ("300", "400", "600", "800"):
-            fails.append(f"styles.css: font-weight {m.group(1)}, the system uses "
-                         f"300, 400, 600 and 800")
+    # Schibsted Grotesk is variable 400 to 900. Weights reach a rule through
+    # a token; a bare number is allowed only inside @font-face, where it
+    # declares the range the file covers.
+    for m in re.finditer(r"font-weight:\s*(\d+)", re.sub(r"@font-face\s*\{[^}]*\}", "", body)):
+        fails.append(f"styles.css: font-weight {m.group(1)} is not a token (--w-*)")
 
     # @font-face has to name the family it is defining. Every other rule in
     # the file must reach the family through a token.
@@ -306,8 +305,25 @@ def check_contrast():
     --accent is deliberately not in the text list. It is a fill, and what is
     checked for it is the label that sits on top of it.
     """
-    tokens = open(os.path.join(OUT, "assets", "tokens.css"), encoding="utf-8").read()
+    whole = open(os.path.join(OUT, "assets", "tokens.css"), encoding="utf-8").read()
+    # The light theme is everything before the first media query. The dark
+    # theme is the light theme with the prefers-color-scheme block laid over
+    # it, so a token the dark block does not redefine is measured as it
+    # really renders at night.
+    light = whole.split("@media")[0]
+    dark_m = re.search(r"@media \(prefers-color-scheme: dark\)\s*\{\s*:root\s*\{([^}]*)\}", whole)
+    themes = [("light", light)]
+    if dark_m:
+        themes.append(("dark", dark_m.group(1) + "\n" + light))
+    else:
+        fails.append("tokens.css: no dark theme. The site renders in the reader's scheme.")
+    for theme, tokens in themes:
+        _contrast_theme(theme, tokens)
 
+
+def _contrast_theme(theme, tokens):
+    """One theme's pairs. A token defined twice is read at its first
+    definition, which for the dark theme is the dark value."""
     def colour(name):
         """A token may be a hex value or an alpha of ink over a surface."""
         m = re.search(r"--" + name + r":\s*#([0-9A-Fa-f]{6})", tokens)
@@ -318,11 +334,11 @@ def check_contrast():
         if m:
             base = tuple(int(v) for v in m.group(1).split())
             return ("alpha", (base, float(m.group(2))))
-        fails.append(f"tokens.css: --{name} is neither a hex value nor an alpha")
+        fails.append(f"tokens.css ({theme}): --{name} is neither a hex value nor an alpha")
         return None
 
     surfaces = {}
-    for name in ("paper", "paper-deep", "warm", "sand"):
+    for name in ("paper", "sheet", "paper-deep"):
         c = colour(name)
         if c and c[0] == "hex":
             surfaces[name] = c[1]
@@ -346,21 +362,21 @@ def check_contrast():
             pairs.append((f"--{name} on {sname}", resolve(tok, s_rgb), s_rgb, 7.0))
 
     # Fills carry a label rather than being one.
-    accent, on_accent = colour("accent"), colour("on-accent")
-    ink = colour("ink")
-    if accent and on_accent:
-        pairs.append(("--on-accent on --accent", on_accent[1], accent[1], 4.5))
-    if ink and on_accent:
-        pairs.append(("--on-accent on --ink", on_accent[1], ink[1], 4.5))
+    for fill, label in (("accent", "on-accent"), ("mark", "on-mark")):
+        f, l = colour(fill), colour(label)
+        if f and l:
+            pairs.append((f"--{label} on --{fill}", l[1], f[1], 7.0))
 
-    # The three lit values exist only for the ink ground, so they are measured
-    # against it and against nothing else. A value derived to read on paper is
-    # around 2:1 here, which is the mistake they were added to stop.
-    if ink:
-        for name in ("withdrawn-lit", "substituted-lit", "accent-lit"):
+    # The forest band keeps its colour in both themes, and everything on it
+    # is measured against it and against nothing else. A value derived to
+    # read on paper is around 2:1 here, which is the mistake the lit values
+    # were added to stop.
+    forest = colour("forest")
+    if forest:
+        for name in ("on-forest", "on-forest-2", "withdrawn-lit", "substituted-lit", "accent-lit"):
             tok = colour(name)
             if tok:
-                pairs.append((f"--{name} on --ink", tok[1], ink[1], 7.0))
+                pairs.append((f"--{name} on --forest", tok[1], forest[1], 7.0))
 
     worst = None
     for label, fg, bg, need in pairs:
@@ -368,10 +384,11 @@ def check_contrast():
         if worst is None or r < worst[1]:
             worst = (label, r)
         if r < need:
-            fails.append(f"contrast: {label} is {r:.2f}:1, this site holds it to {need}:1")
+            fails.append(f"contrast ({theme}): {label} is {r:.2f}:1, this site holds it to {need}:1")
     if worst:
-        notes.append(f"contrast: {len(pairs)} pairs measured, tightest {worst[0]} "
+        notes.append(f"contrast ({theme}): {len(pairs)} pairs measured, tightest {worst[0]} "
                      f"at {worst[1]:.2f}:1")
+
 
 ALLOWED_ORIGINS = {
     "https://kinvisit.in",      # our own canonical
