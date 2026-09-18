@@ -26,9 +26,8 @@ OUT = os.path.join(HERE, "site")
 DST = os.path.join(HERE, "kinvisit-report-desk.html")
 
 FONTS = {
-    "/assets/fonts/geist-latin.woff2": "geist-latin.woff2",
-    "/assets/fonts/geist-mono-latin.woff2": "geist-mono-latin.woff2",
-    "/assets/fonts/literata-latin.woff2": "literata-latin.woff2",
+    "/assets/fonts/schibsted-latin.woff2": "schibsted-latin.woff2",
+    "/assets/fonts/jetbrains-mono-latin.woff2": "jetbrains-mono-latin.woff2",
 }
 
 
@@ -50,6 +49,13 @@ def main():
         with open(os.path.join(OUT, "assets", "fonts", name), "rb") as f:
             b64 = base64.b64encode(f.read()).decode("ascii")
         html = html.replace(href, "data:font/woff2;base64," + b64)
+
+    #    The icons the stylesheet uses as masks travel the same way, or every
+    #    tick and cross on the sheet renders as nothing.
+    for name in sorted(set(re.findall(r"/assets/icons/([a-z-]+)\.svg", html))):
+        with open(os.path.join(OUT, "assets", "icons", name + ".svg"), "rb") as f:
+            b64 = base64.b64encode(f.read()).decode("ascii")
+        html = html.replace(f"/assets/icons/{name}.svg", "data:image/svg+xml;base64," + b64)
 
     # 2. Every script, in the order the page loads them. The Supabase library
     #    is deliberately left out: with no project configured this file cannot

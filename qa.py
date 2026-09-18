@@ -42,7 +42,14 @@ function name(e) {
   var t = (e.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 34);
   return n + (t ? ' "' + t + '"' : '');
 }
-function related(a, b) { return a.contains(b) || b.contains(a); }
+/* A composed figure lays one picture over another on purpose: the report on
+   the corner of the corridor. Two pictures inside one .hero-art are one
+   figure, not a collision. */
+function related(a, b) {
+  if (a.contains(b) || b.contains(a)) return true;
+  var fa = a.closest('.hero-art');
+  return !!fa && fa === b.closest('.hero-art');
+}
 
 function run() {
   var out = [];
@@ -182,8 +189,10 @@ function run() {
 
   Array.prototype.forEach.call(document.querySelectorAll('main .wrap, main .hero-rail'), function (g) {
     if (getComputedStyle(g).display !== 'grid') return;
+    /* A sticky column travels down beside its neighbour as the page
+       scrolls, so the space under its resting position is not empty. */
     var kids = Array.prototype.filter.call(g.children, function (e) {
-      var r = box(e); return r.height > 4;
+      var r = box(e); return r.height > 4 && getComputedStyle(e).position !== 'sticky';
     });
     if (kids.length < 2) return;
     var rows = {};

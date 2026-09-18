@@ -34,7 +34,7 @@ OUT = os.path.join(HERE, "site", "assets", "photos")
 # gets heavy without looking any better.
 PLAN = [
     ("report-on-desk",     [380, 760], None),
-    ("opd-corridor",       [340, 680], None),
+    ("opd-corridor",       [560, 1120], None),
     ("questions-notebook", [380, 760], None),
     # The founder, for the square slot in the bio on /about. The crop is the
     # top square of the frame: it keeps the token board over his shoulder,

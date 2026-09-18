@@ -42,7 +42,8 @@ CASES = [
     ("index.html", "M15 context bar hidden", [r'data-mech="ctxbar" hidden'], []),
     ("index.html", "statistics are real numbers", [r'>62%<', r'>30%<'], [r'>0%<']),
     ("index.html", "the whole argument is present", [
-        r'A photo of a prescription is not a medical record',
+        # The last two words carry the highlighter, so a span sits inside the line.
+        r'A photo of a prescription is not a (?:<span[^>]*>)?medical record',
         r'Oral anti-inflammatory withdrawn',
         r'Right now, one named companion attends every visit',
         r'is not clinically qualified',

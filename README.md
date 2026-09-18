@@ -255,8 +255,7 @@ from `tokens.css` rather than trusted from a comment, a third-party embed or
 an outside origin not named in `/cookies`, a claim of police verification that
 `companions.json` does not record, a missing legal page, a homepage that stops
 linking to one, a data-collecting form with no required consent checkbox, a hardcoded colour outside `tokens.css`,
-a colour literal that is not an alpha of ink or paper, a font weight other than
-400 or 500, a font family that is not a token, a forbidden family (Inter,
+a colour literal that is not an alpha of ink or paper, a font weight that is not a `--w-*` token, a text colour under 7:1 in either theme, a font family that is not a token, a forbidden family (Inter,
 Roboto, Arial, any system stack), `--ink-40` used as a text colour, an em dash
 or en dash in visible copy, a
 banned marketing word, an emoji in **any** file including comments, unbalanced
@@ -365,29 +364,39 @@ spouse", and "23 crore over 60 by 2036".
 
 ## The design system
 
-Six colours, measured not estimated. Paper `#FCFBF9`, paper-deep `#F4F1EB`,
-ink `#14140F`, a deep slate-teal accent `#1E4D52` used only for links and the
-primary CTA, and two muted semantics that appear in the report and the
-medication tables and nowhere else: withdrawn `#8A4034`, substituted `#3F5F3A`.
-Everything else is ink at an alpha.
+"The Record". Cool paper `#F2F3EF`, white sheets lifted off it, forest ink
+`#14231D`, a forest fill `#1E3B2F` for the primary button, the report
+letterhead and the two banded sections, and one accent: an amber highlighter
+`#F4C04E`. The highlighter is painted behind a phrase, never used as a text
+colour, and marks at most one line per screen: the line in a record that
+mattered. The two medication semantics, withdrawn and substituted, still
+appear in the report and the medication tables and nowhere else.
 
-Every combination clears WCAG AA on both backgrounds. The lowest text contrast
-on the site is 5.27:1. The one exception is the "not prescribed" cell, which is
-a decorative middot with `aria-hidden` and the real text in a visually hidden
-span, and it carries an explicit exemption marker that `check.py` looks for.
+There is a full dark theme, chosen by the reader's system setting. There is no
+toggle, because a toggle has to remember the choice, and /cookies says the
+only thing stored on a device is the portal session and a desk draft.
+`check.py` measures every text pair in both themes against a 7:1 floor, and
+everything on the forest band against the forest.
 
-Five type sizes, 88 / 52 / 32 / 18 / 13, contracting to 40 / 28 / 22 / 18 / 13
-on a phone. Two weights, 400 and 500. Three families: Geist for the site,
-Literata for the report, Geist Mono for every dose, date and label. The report
-is set in a different family from the page on purpose, so it reads as a printed
-clinical document embedded in a site rather than as another styled section.
+One family for everything read, Schibsted Grotesk, and JetBrains Mono only
+where a value is quoted: a reference, a dose, a time. Both are self-hosted
+under the SIL Open Font License. Weights reach a rule only through the
+`--w-*` tokens. Anything pressed is a pill, surfaces are 14px, small surfaces
+inside them 8px. Depth is a soft shadow tinted to the ink.
+
+Icons are Phosphor (MIT), vendored as SVG files in `site/assets/icons` and
+inlined by `icon()` in `build.py`, or used as CSS masks so they take the text
+colour. None is drawn by hand and none comes from a CDN. The wordmark is still
+Geist outlines, drawn by `gen_assets.py`, which is why the Geist and Literata
+files stay in `assets/fonts`: the PDFs and the share card are rendered with
+them.
 
 ## Performance
 
-The homepage is 22.4KB gzipped including all CSS, which is inlined. Zero
-render-blocking external requests. All three faces are self-hosted from
-`assets/fonts` under the SIL Open Font License, 84KB total, with Geist
-preloaded and all three on `font-display: swap`, so no text waits on a network
+The homepage is 32KB gzipped including all CSS, which is inlined. Zero
+render-blocking external requests. Both faces are self-hosted from
+`assets/fonts` under the SIL Open Font License, 77KB total, with Schibsted Grotesk
+preloaded and both on `font-display: swap`, so no text waits on a network
 font and no reader on a health page is announced to a third-party font host.
 Mechanism scripts load only when their section approaches the viewport: 10.4KB
 gzipped on the homepage against a 60KB budget. The only third-party request is
