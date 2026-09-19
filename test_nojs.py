@@ -40,6 +40,9 @@ CASES = [
         r'11:51', r'not a clinician on duty',
     ], []),
     ("index.html", "M15 context bar hidden", [r'data-mech="ctxbar" hidden'], []),
+    ("hospitals.html", "M12 the map is drawn without a script", [
+        r'class="hm-svg"', r'data-hm="Medanta The Medicity, Gurugram"', r'Positions are approximate',
+    ], []),
     ("index.html", "the room diagram still shows the problem", [
         r'Nothing leaves', r'class="rm-after rm-comp"',
     ], []),

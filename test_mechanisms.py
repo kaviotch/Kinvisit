@@ -149,6 +149,14 @@ CASES = [
   t('M12 says no to Chennai',      ask('Apollo Chennai').className.indexOf('outside') > -1);
   t('M12 says no to Bangalore',    ask('Manipal Bangalore').className.indexOf('outside') > -1);
   t('M12 still yes to Delhi Apollo', ask('Indraprastha Apollo').textContent.indexOf('Apollo') > -1);
+  t('M12 map has every hospital',   document.querySelectorAll('.hm-pin').length === 26);
+  ask('medanta');
+  t('M12 map lights the match',     document.querySelectorAll('.hm-pin.on').length === 1 &&
+                                    q('.hm-pin.on').getAttribute('data-hm') === 'Medanta The Medicity, Gurugram');
+  t('M12 map dims the rest',        q('.hm').classList.contains('has-on'));
+  ask('Apollo Chennai');
+  t('M12 map clears on a miss',     document.querySelectorAll('.hm-pin.on').length === 0 &&
+                                    !q('.hm').classList.contains('has-on'));
 """),
 
     ("pricing.html", 1200, 12000, r"""

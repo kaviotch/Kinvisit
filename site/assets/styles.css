@@ -2033,6 +2033,53 @@ html:not(.js) .pt-strip { display: none; }
   to   { background-size: 100% 100%; }
 }
 
+/* ------------------------------------------------------ the hospital map
+   A sketch drawn from hospitals.json: the river and the hospitals, nothing
+   else. It works as a picture with no script. With one, the checker lights
+   the hospital it matched. */
+
+.hm { margin: var(--s-5) 0 0; }
+@media (min-width: 960px) {
+  .hc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+        grid-template-rows: repeat(4, auto) 1fr; column-gap: var(--s-6); }
+  .hc > :not(.hm) { grid-column: 1; }
+  .hm { grid-column: 2; grid-row: 1 / span 5; margin: 0; }
+}
+.hm-svg { display: block; width: 100%; height: auto; overflow: hidden;
+          background: var(--sheet); border-radius: var(--radius); box-shadow: var(--lift-sm); }
+.hm figcaption { margin-top: var(--s-2); }
+.hm-river { fill: none; stroke: var(--ink-20); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.hm-river-l, .hm-area {
+  font-family: var(--font-ui); font-size: 11px; font-weight: var(--w-semi);
+  letter-spacing: 0.08em; text-transform: uppercase; fill: var(--ink-70);
+}
+.hm-river-l { font-style: italic; text-transform: none; letter-spacing: 0; font-weight: var(--w-regular); }
+.hm-dot { fill: var(--ink); stroke: var(--sheet); stroke-width: 1.5; }
+.hm-ring { fill: none; stroke: var(--ink); stroke-width: 1.5; opacity: 0; }
+.hm-name {
+  font-family: var(--font-ui); font-size: 13px; font-weight: var(--w-semi); fill: var(--ink);
+  paint-order: stroke; stroke: var(--sheet); stroke-width: 4px; stroke-linejoin: round;
+  opacity: 0;
+}
+.hm-pin.on .hm-name { opacity: 1; }
+.hm-pin.on .hm-dot { fill: var(--mark); stroke: var(--ink); }
+.hm-pin.on .hm-ring { opacity: 1; }
+.hm.has-on .hm-pin:not(.on) .hm-dot { opacity: 0.35; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .hm .hm-pin { opacity: 0; }
+  .js .hm.in .hm-pin {
+    opacity: 1; transition: opacity 400ms var(--ease);
+    transition-delay: calc(300ms + var(--i) * 45ms);
+  }
+  .hm-pin.on .hm-ring { animation: hm-ping 1.6s var(--ease) infinite; transform-box: fill-box; transform-origin: center; }
+  .hm-dot { transition: fill var(--dur) var(--ease); }
+}
+@keyframes hm-ping {
+  from { transform: scale(1); opacity: 1; }
+  to   { transform: scale(4); opacity: 0; }
+}
+
 /* ---------------------------------------------------- the room, resolved
    Reached with a script running, the room figure draws in what Kinvisit
    changes, in order: the empty chair is taken, the broken line goes, and

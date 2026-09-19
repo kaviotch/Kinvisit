@@ -483,6 +483,70 @@ def share_banner():
 # ======================================================= M12. HOSPITAL CHECKER
 
 
+# The map beside the checker. Drawn here from the coordinates in
+# hospitals.json, so there is no map tile, no map provider, and no request
+# leaves the page. It is a sketch for orientation: the river and the
+# hospitals, nothing that would need surveying.
+
+MAP_W, MAP_LNG0, MAP_LNG1, MAP_LAT0, MAP_LAT1 = 560, 77.00, 77.52, 28.34, 28.76
+MAP_H = round(MAP_W * (MAP_LAT1 - MAP_LAT0) / ((MAP_LNG1 - MAP_LNG0) * 0.878))
+
+# The Yamuna, roughly, north to south. Enough to tell east of the river from
+# west of it, which is how people in Delhi give directions.
+YAMUNA = [(28.76, 77.215), (28.72, 77.228), (28.68, 77.235), (28.64, 77.252),
+          (28.60, 77.262), (28.57, 77.275), (28.545, 77.300), (28.52, 77.318),
+          (28.48, 77.345), (28.44, 77.375), (28.40, 77.405), (28.34, 77.44)]
+
+# Where each area's name sits, placed by hand in clear ground beside its
+# hospitals rather than on top of them.
+AREA_AT = {
+    "North Delhi": (28.735, 77.156), "West Delhi": (28.651, 77.096),
+    "Central Delhi": (28.662, 77.185), "East Delhi": (28.626, 77.298),
+    "South Delhi": (28.505, 77.215), "Ghaziabad": (28.672, 77.345),
+    "Noida": (28.588, 77.43), "Greater Noida": (28.452, 77.46),
+    "Gurugram": (28.405, 77.06), "Faridabad": (28.362, 77.33),
+}
+
+
+def _map_xy(lat, lng):
+    x = (lng - MAP_LNG0) / (MAP_LNG1 - MAP_LNG0) * MAP_W
+    y = (MAP_LAT1 - lat) / (MAP_LAT1 - MAP_LAT0) * MAP_H
+    return round(x, 1), round(y, 1)
+
+
+def hospital_map():
+    H = C.HOSPITALS["hospitals"]
+    river = " ".join(f"{x},{y}" for x, y in (_map_xy(a, b) for a, b in YAMUNA))
+    dots = ""
+    for i, h in enumerate(H):
+        x, y = _map_xy(h["lat"], h["lng"])
+        right = x < MAP_W - 190
+        tx, anchor = (x + 12, "start") if right else (x - 12, "end")
+        dots += (f'<g class="hm-pin" data-hm="{esc(h["name"])}" style="--i:{i}">'
+                 f'<circle class="hm-ring" cx="{x}" cy="{y}" r="5"/>'
+                 f'<circle class="hm-dot" cx="{x}" cy="{y}" r="4.5"><title>{esc(h["name"])}</title></circle>'
+                 f'<text class="hm-name" x="{tx}" y="{y + 4}" text-anchor="{anchor}">{esc(h["name"])}</text>'
+                 f'</g>')
+    labels = ""
+    for area in C.HOSPITALS["areas"]:
+        if area not in AREA_AT or not any(h["area"] == area for h in H):
+            continue
+        cx, cy = _map_xy(*AREA_AT[area])
+        labels += f'<text class="hm-area" x="{round(cx)}" y="{round(cy)}" text-anchor="middle">{esc(area)}</text>'
+    rx, ry = _map_xy(28.70, 77.236)
+    return f"""<figure class="hm rv">
+  <svg class="hm-svg" viewBox="0 0 {MAP_W} {MAP_H}" role="img"
+    aria-label="A sketch map of Delhi NCR with the Yamuna running north to south and {len(H)} listed hospitals marked, from Shalimar Bagh in the north to Faridabad in the south, and from Paschim Vihar and Gurugram in the west to Greater Noida in the east.">
+    <polyline class="hm-river" points="{river}"/>
+    <text class="hm-river-l" x="{rx + 8}" y="{ry}">Yamuna</text>
+    {labels}
+    {dots}
+  </svg>
+  <figcaption class="fine">A sketch for orientation. Positions are approximate, and we attend
+    anywhere in these areas, not only at the marked hospitals.</figcaption>
+</figure>"""
+
+
 def hospital_checker(compact=False):
     H = C.HOSPITALS
     options = "".join(f'<option value="{esc(h["name"])}"></option>' for h in H["hospitals"])
@@ -507,6 +571,7 @@ def hospital_checker(compact=False):
     <p class="fine">We attend at any hospital, clinic, or diagnostic centre in these areas.</p>
     {static}
   </div>
+  {"" if compact else hospital_map()}
 </div>"""
 
 

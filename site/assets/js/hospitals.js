@@ -104,12 +104,30 @@
     out.className = cls;
     out.innerHTML = html;
     out.hidden = false;
+    light(found && found.name);
 
     /* The raw query is a place name, not health information, and the misses
        are the expansion roadmap. */
     KV.track('hospital_checked', result === 'covered'
       ? { result: result }
       : { result: result, query: normalise(query).slice(0, 60) });
+  }
+
+  /* The map is optional: a page can carry the checker without it. The pin
+     is found by name, so the map and the lookup read the same list. */
+  var map = root.querySelector('.hm');
+  function light(name) {
+    if (!map) return;
+    var hit = null;
+    Array.prototype.forEach.call(map.querySelectorAll('.hm-pin'), function (p) {
+      var on = !!name && p.getAttribute('data-hm') === name;
+      p.classList.toggle('on', on);
+      if (on) hit = p;
+    });
+    map.classList.toggle('has-on', !!hit);
+    /* Last in the document paints on top, so the lit label is never under
+       a neighbouring dot. */
+    if (hit) hit.parentNode.appendChild(hit);
   }
 
   function escapeHTML(s) {
