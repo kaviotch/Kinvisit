@@ -76,6 +76,29 @@ CASES = [
   click('.sh-chip[data-sh-v=parent]');
   t('M10 parent variant differs',  q('[data-sh-text]').value.indexOf('They just write') > -1);
 
+  t('M17 dial revealed',            !q('.vd-dial-wrap').hidden && !q('.vd-you').hidden);
+  t('M17 one moment at a time',     document.querySelectorAll('.vd-ev.is-on').length === 1);
+  t('M17 ticks drawn',              document.querySelectorAll('.vd-tick').length > 40);
+  t('M17 starts the night before',  q('.vd-ev.is-on').getAttribute('data-vd-id') === 'questions');
+  t('M17 your questions on phone',  document.querySelectorAll('.vd-phone .vd-msg').length === 1);
+  q('[data-vd-zone]').value = 'Europe/London';
+  q('[data-vd-zone]').dispatchEvent(new Event('change'));
+  t('M17 London consult at 6:42am', txt('[data-vd-sum]').indexOf('6:42am') > -1);
+  click('[data-vd-nav=next]');
+  t('M17 next moves on',            q('.vd-ev.is-on').getAttribute('data-vd-id') === 'arrives');
+  t('M17 local clock in London',    txt('[data-vd-local]') === '4:10am');
+  q('[data-vd-dial]').dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+  t('M17 End reaches the report',   q('.vd-ev.is-on').getAttribute('data-vd-id') === 'filed');
+  t('M17 three messages by night',  document.querySelectorAll('.vd-phone .vd-msg').length === 3);
+  t('M17 night-before is stamped',  /You, Wed /.test(txt('.vd-phone .vd-from-you')));
+  t('M17 slider value follows',     q('[data-vd-dial]').getAttribute('aria-valuenow') === '10');
+  q('[data-vd-zone]').value = 'America/Los_Angeles';
+  q('[data-vd-zone]').dispatchEvent(new Event('change'));
+  t('M17 SF consult the day before',txt('[data-vd-sum]').indexOf('Wednesday 10 June') > -1);
+  q('[data-vd-zone]').value = 'Asia/Kolkata';
+  q('[data-vd-zone]').dispatchEvent(new Event('change'));
+  t('M17 India says so honestly',   txt('[data-vd-sum]').indexOf('same country') > -1);
+
   t('no stat renders as zero',     !/(^|[^\d])0%/.test(copy()));
 """),
 

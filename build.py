@@ -1187,6 +1187,8 @@ def build_home():
   </div>
 </section>
 
+{M.visit_day()}
+
 <section class="tight">
   <div class="wrap">
     <h2>What the companion does, and does not, do.</h2>

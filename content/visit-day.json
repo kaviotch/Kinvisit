@@ -1,0 +1,79 @@
+{
+ "_comment": "M17. One visit day, the same illustrative visit as report #04 on the homepage. Not a real patient. Times are India time, as minutes from midnight on the visit date; a negative number is the evening before. The waits are deliberate: they are what the family would otherwise take a day off for. 'msg' is what reaches the family's phone. Only messages the service already promises may appear here: the questions the family sends the night before, the short WhatsApp the desk composes before the companion leaves the building, and the report before midnight. Do not add a live update from the waiting room until that is a service we actually run. 'hl' marks the one line in the day that mattered, and there is only ever one.",
+ "illustrative": true,
+ "date": "2026-06-11",
+ "dateLabel": "Thursday 11 June",
+ "consultEvent": "called-in",
+ "events": [
+  {
+   "id": "questions",
+   "t": -140,
+   "title": "You send the questions",
+   "text": "Two things you want asked: the knee, and whether April's kidney result changes anything.",
+   "msg": {"from": "you", "text": "Please ask about her right knee. And does the April kidney result matter for any painkiller?"}
+  },
+  {
+   "id": "arrives",
+   "t": 520,
+   "title": "The companion is at registration",
+   "text": "With the file: four visits, every medicine she takes, and the April renal panel on paper."
+  },
+  {
+   "id": "token",
+   "t": 545,
+   "title": "Token 47, Orthopaedics room 12",
+   "text": "The board shows 31. The wait starts, and nobody in the family has taken the morning off for it."
+  },
+  {
+   "id": "waiting",
+   "t": 630,
+   "title": "Still on the bench",
+   "text": "An hour and a half in. The questions are written out and in the companion's hand."
+  },
+  {
+   "id": "called-in",
+   "t": 672,
+   "title": "Called in",
+   "text": "The consultation starts. It will last eight minutes."
+  },
+  {
+   "id": "egfr",
+   "t": 675,
+   "title": "Oral diclofenac is proposed",
+   "text": "The companion asks your second question and puts the April result on the desk.",
+   "hl": "eGFR 58, recorded in April."
+  },
+  {
+   "id": "changed",
+   "t": 680,
+   "title": "The plan changes",
+   "text": "The oral drug is withdrawn. A gel is prescribed instead, and a repeat kidney test is booked for 24 June."
+  },
+  {
+   "id": "reconciled",
+   "t": 695,
+   "title": "Checked before leaving",
+   "text": "The new prescription is read against every medicine she already takes, while the doctor is still down the corridor."
+  },
+  {
+   "id": "leaves",
+   "t": 710,
+   "title": "Leaving the building",
+   "text": "The short version goes to you on WhatsApp before the companion is out of the hospital.",
+   "msg": {"from": "kinvisit", "text": "Visit done. Oral painkiller not started: withdrawn because of the April kidney result. Gel twice daily instead. Kidney test booked 24 June. Full report tonight."}
+  },
+  {
+   "id": "written",
+   "t": 1230,
+   "title": "The report is written",
+   "text": "Every question, what was said, what changed, and why, set against the three visits before it."
+  },
+  {
+   "id": "filed",
+   "t": 1270,
+   "title": "Report #04 is filed",
+   "text": "In your inbox and your portal before midnight India time, as promised.",
+   "msg": {"from": "kinvisit", "text": "Consultation report #04 is ready. 11 June, Orthopaedics."}
+  }
+ ]
+}

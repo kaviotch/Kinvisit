@@ -48,6 +48,7 @@ ATTENDS_RAIL = (
     else "One named companion, the same one each time"
 )
 COMPOUNDING = load("compounding-demo.json")
+VISIT_DAY = load("visit-day.json")
 
 
 # ============================================================ B. THE PRICING

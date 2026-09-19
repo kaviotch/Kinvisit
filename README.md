@@ -19,6 +19,8 @@ copydiff.py         proves a redesign moved copy rather than rewriting it.
 qa.py               layout QA: overlaps, crowding, real overflow, escapes.
 standalone.py       builds the one file a companion can be given directly.
 supabase/           the portal's schema and access rules. Run once, by hand.
+content/visit-day.json one illustrative visit day, hour by hour. Only messages
+                    the service already promises may appear in it.
 content/business.json  the seller's legal identity. Ships empty. Nothing renders
                     until it is filled, the same rule as ledger.json.
 gen_assets.py       renders the wordmark, share card, icons, and both PDFs.
@@ -306,7 +308,8 @@ Netlify subdomain answers either. Nothing is live, so:
    `share_recipient_arrived`, `compounding_scrubber_engaged` and
    `_completed`, `wa_builder_launched`, `gap_calculator_completed`,
    `hospital_checked`, `report_annotation_opened`, `callback_window_selected`,
-   `pricing_recommender_used`, `overseas_tier_viewed`, `escalation_viewed`.
+   `pricing_recommender_used`, `overseas_tier_viewed`, `escalation_viewed`,
+   `visit_day_engaged` and `visit_day_completed`.
 7. **Paste the live URL into WhatsApp on a real phone** and confirm the card
    shows the consultation report.
 
@@ -361,6 +364,23 @@ spouse", and "23 crore over 60 by 2036".
   the confirmation email in Part 5 cannot be sent to a phone number.
 - **The founding-family offer is still not on the site.** It is a pricing
   commitment and it is yours to make.
+
+## The visit day, M17
+
+The homepage section "Your parent's appointment, on your clock" walks the
+report #04 visit from the questions sent the night before to the report
+filed that night. With no script it is an ordered list in India time. With
+one, a dial moves through it and a second column gives the time and a hedged
+guess at the reader's day in their own time zone, read from the browser and
+changeable from a picker. The dial is a vanilla port of the Gaussian tick
+scale from Great UI's revision timeline (MIT, via 21st.dev); no React and no
+third-party script reaches the page.
+
+The phone column shows only three messages, because those are the only
+messages the service promises: the family's own questions, the short
+WhatsApp the desk composes before the companion leaves the building, and the
+report. Adding a live update from the waiting room would make the section
+promise a service that does not run.
 
 ## The design system
 

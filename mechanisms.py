@@ -695,3 +695,106 @@ def conversations():
   {blocks}
 </section>"""
     return out
+
+
+# ========================================================= M17. THE VISIT DAY
+#
+# One visit day, set against the clock of whoever is reading. The static list
+# is the whole day in India time and needs nothing else. With a script, it
+# becomes a dial you drag through, and a second column says what time each
+# moment was where the reader lives. The dial is a port of the Gaussian tick
+# scale in Great UI's revision timeline (MIT), rebuilt without React.
+
+VISIT_DAY_ZONES = [
+    ("Europe/London", "London"),
+    ("America/New_York", "New York"),
+    ("America/Los_Angeles", "San Francisco"),
+    ("America/Toronto", "Toronto"),
+    ("Asia/Dubai", "Dubai"),
+    ("Asia/Singapore", "Singapore"),
+    ("Australia/Sydney", "Sydney"),
+    ("Asia/Kolkata", "India"),
+]
+
+
+def _ist(minutes):
+    m = minutes % 1440
+    h, mm = divmod(m, 60)
+    suffix = "am" if h < 12 else "pm"
+    h12 = h % 12 or 12
+    when = f"{h12}:{mm:02d}{suffix}"
+    return when if minutes >= 0 else f"{when} the evening before"
+
+
+def visit_day():
+    D = C.VISIT_DAY
+    items = ""
+    for ev in D["events"]:
+        hl = f' <span class="hl">{esc(ev["hl"])}</span>' if ev.get("hl") else ""
+        msg = ""
+        if ev.get("msg"):
+            who = "You" if ev["msg"]["from"] == "you" else "Kinvisit"
+            msg = (f'<p class="vd-msg vd-from-{esc(ev["msg"]["from"])}">'
+                   f'<span class="vd-msg-who">{who}, on WhatsApp</span>'
+                   f'{esc(ev["msg"]["text"])}</p>')
+        items += f"""<li class="vd-ev" data-vd-id="{esc(ev['id'])}">
+  <p class="vd-when">{_ist(ev['t'])}<span class="vh"> India time</span></p>
+  <h3 class="vd-title">{esc(ev['title'])}</h3>
+  <p class="vd-text">{esc(ev['text'])}{hl}</p>
+  {msg}
+</li>"""
+
+    zones = "".join(f'<option value="{z}">{esc(label)}</option>' for z, label in VISIT_DAY_ZONES)
+
+    return f"""<section class="sunk" id="visit-day">
+  <div class="wrap">
+    <div class="prose">
+      <p class="eyebrow">One visit day</p>
+      <h2>Your parent's appointment, on your clock.</h2>
+      <p class="lede" data-vd-lede>The same visit as report #04, from the night before to the
+        report. Every time below is India time.</p>
+    </div>
+
+    <div class="vd" data-mech="visit-day">
+      {data_json("visit-day-data", D)}
+
+      <div class="vd-head" hidden>
+        <label class="vd-zone" for="vd-zone">Where you are
+          <select id="vd-zone" data-vd-zone>{zones}</select>
+        </label>
+        <p class="vd-sum" data-vd-sum role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="vd-stage">
+        <div class="vd-here">
+          <p class="vd-you-l vd-here-l" hidden>In Delhi</p>
+          <ol class="vd-list" aria-label="{esc(D['dateLabel'])}, hour by hour">{items}</ol>
+        </div>
+
+        <aside class="vd-you" hidden aria-label="Where you are at that moment">
+          <p class="vd-you-l">Your clock</p>
+          <p class="vd-you-t" data-vd-local></p>
+          <p class="vd-you-s" data-vd-state></p>
+          <div class="vd-phone" data-vd-phone>
+            <p class="vd-phone-empty" data-vd-empty>Nothing on your phone yet.</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="vd-dial-wrap" hidden>
+        <button type="button" class="cs-arrow vd-arrow" data-vd-nav="prev" aria-label="Earlier">&#8592;</button>
+        <div class="vd-dial" data-vd-dial role="slider" tabindex="0"
+          aria-label="Time of day in Delhi" aria-valuemin="0" aria-valuemax="{len(D['events']) - 1}"
+          aria-valuenow="0">
+          <div class="vd-ticks" data-vd-ticks aria-hidden="true"></div>
+          <span class="vd-needle" aria-hidden="true"></span>
+        </div>
+        <button type="button" class="cs-arrow vd-arrow" data-vd-nav="next" aria-label="Later">&#8594;</button>
+      </div>
+      <p class="fine vd-hint" hidden>Drag the dial, or use the arrow keys.</p>
+    </div>
+
+    <p class="prose fine" style="margin-top:20px">Illustrative. Not a real patient, and the same
+      sample as the report above. Waiting times in a Delhi OPD vary from day to day.</p>
+  </div>
+</section>"""

@@ -40,6 +40,10 @@ CASES = [
         r'11:51', r'not a clinician on duty',
     ], []),
     ("index.html", "M15 context bar hidden", [r'data-mech="ctxbar" hidden'], []),
+    ("index.html", "M17 the whole visit day is listed in India time", [
+        r'class="vd-list"', r'9:40pm the evening before', r'11:12am', r'eGFR 58, recorded in April',
+        r'Consultation report #04 is ready', r'class="vd-dial-wrap" hidden', r'class="vd-you" hidden',
+    ], []),
     ("index.html", "statistics are real numbers", [r'>62%<', r'>30%<'], [r'>0%<']),
     ("index.html", "the whole argument is present", [
         # The last two words carry the highlighter, so a span sits inside the line.
