@@ -1975,3 +1975,61 @@ html:not(.js) .pt-strip { display: none; }
 .vd-arrow { border-color: var(--ink-40); color: var(--ink); }
 .vd-arrow:hover:not(:disabled) { border-color: var(--ink); }
 
+/* ------------------------------------------------------ page transitions
+   Same-origin navigations cross-fade natively in browsers that support it,
+   with no script. Everywhere else a link is an ordinary page load. The one
+   shared object is the photograph of the report on the table: on the
+   homepage it is the tilted inset in the opening, on /record it is the
+   picture beside the rail, and the browser carries it from one to the other.
+   The bar stays put so the page changes under it rather than with it. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  .nav { view-transition-name: site-nav; }
+  .hero-art-inset,
+  .hero-shot[data-shot="report-on-desk"] .rail-frame { view-transition-name: report-photo; }
+
+  ::view-transition-group(report-photo) { animation-duration: 560ms; animation-timing-function: var(--ease); }
+  ::view-transition-old(root) { animation: kv-page-out 200ms var(--ease) both; }
+  ::view-transition-new(root) { animation: kv-page-in 420ms var(--ease) 60ms both; }
+}
+
+@keyframes kv-page-out { to { opacity: 0; } }
+@keyframes kv-page-in  { from { opacity: 0; transform: translateY(12px); } }
+
+/* ------------------------------------------------- the report, written in
+   The homepage report card fills in the way a companion fills one in: the
+   printed labels are already on the sheet, each answer is typed across in
+   turn, and only once the sheet is complete does the highlighter go over
+   the line that mattered. Without a script, or with reduced motion, the
+   card is simply complete. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .pair .report-row dd,
+  .js .pair .report-head .n { clip-path: inset(0 100% 0 0); }
+  .js .pair.in .report-row dd,
+  .js .pair.in .report-head .n {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 620ms steps(22, end) var(--kv-at, 400ms);
+  }
+  .js .pair .report-head .n { --kv-at: 300ms; transition-duration: 200ms; }
+  .js .pair .report-row:nth-child(1) dd { --kv-at: 600ms; }
+  .js .pair .report-row:nth-child(2) dd { --kv-at: 1300ms; }
+  .js .pair .report-row:nth-child(3) dd { --kv-at: 2000ms; }
+  .js .pair .report-row:nth-child(4) dd { --kv-at: 2700ms; }
+  .js .pair .report-row:nth-child(5) dd { --kv-at: 3400ms; }
+
+  .js .pair .report-foot { opacity: 0; }
+  .js .pair.in .report-foot { opacity: 1; transition: opacity 500ms var(--ease) 4100ms; }
+  /* A keyframe rather than a transition. The stroke is already painted
+     before the script arrives, and a transition from painted to painted
+     never runs, so the sweep is drawn explicitly once the sheet is full. */
+  .js .pair .report-foot .hl { background-size: 0% 100%; transition: none; }
+  .js .pair.in .report-foot .hl { animation: kv-mark 1.1s var(--ease) 4700ms both; }
+}
+@keyframes kv-mark {
+  from { background-size: 0% 100%; }
+  to   { background-size: 100% 100%; }
+}
+

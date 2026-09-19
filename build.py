@@ -498,8 +498,11 @@ def hero_rail(items, label="At a glance", shot=None, caption=None, stamp=None):
         # The picture is a column beside the text, not a block inside the
         # band. Beside it, it stretches to whatever height the text is, so
         # neither a long opening nor a short one leaves a hole.
-        pic = (f'<figure class="hero-shot">'
-               f'<span class="rail-frame">{photo_img(shot)}{mark}</span>{cap}</figure>')
+        # Eager, because it is at the top of the page, and because a page
+        # transition that morphs into a picture still loading morphs into
+        # an empty frame.
+        pic = (f'<figure class="hero-shot" data-shot="{shot}">'
+               f'<span class="rail-frame">{photo_img(shot, loading="eager")}{mark}</span>{cap}</figure>')
     return (f'{pic}<aside class="hero-rail" aria-label="{label}">'
             f'<dl>{rows}</dl></aside>')
 
