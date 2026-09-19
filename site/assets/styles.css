@@ -1949,7 +1949,7 @@ html:not(.js) .pt-strip { display: none; }
 
 .vd-dial-wrap { display: flex; align-items: center; gap: var(--s-2); margin-top: var(--s-4); }
 .vd-dial {
-  position: relative; flex: 1; min-width: 0; height: 80px; overflow: hidden;
+  position: relative; flex: 1; min-width: 0; height: 104px; overflow: hidden;
   cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
   border-radius: var(--radius-sm);
   -webkit-mask-image: linear-gradient(to right, transparent, var(--ink) 15%, var(--ink) 85%, transparent);
@@ -1958,7 +1958,7 @@ html:not(.js) .pt-strip { display: none; }
 .vd-dragging .vd-dial { cursor: grabbing; }
 .vd-dial:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .vd-ticks {
-  position: absolute; left: 0; bottom: 0; display: flex; align-items: flex-end; gap: 9px;
+  position: absolute; left: 0; bottom: 26px; display: flex; align-items: flex-end; gap: 9px;
   transition: transform var(--dur) var(--ease);
 }
 .vd-dragging .vd-ticks { transition: none; }
@@ -1966,12 +1966,18 @@ html:not(.js) .pt-strip { display: none; }
   flex: none; width: 3px; height: 14px; border-radius: var(--radius-pill) var(--radius-pill) 0 0;
   background: var(--ink-20); transition: height var(--dur) var(--ease), background-color var(--dur) var(--ease);
 }
+.vd-tick { position: relative; }
 .vd-tick.vd-hour { background: var(--ink-40); }
+.vd-hl {
+  position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: var(--t-caption); font-weight: var(--w-regular);
+  line-height: 1; color: var(--ink-70); white-space: nowrap;
+}
 .vd-tick.vd-evt { background: var(--ink-70); }
 .vd-tick.on { background: var(--ink); }
 .vd-needle { position: absolute; left: 50%; top: 0; width: 1px; height: 10px; background: var(--ink); }
 .vd-arrow { flex: none; }
-.vd-hint { margin-top: var(--s-2); text-align: center; }
+.vd-hint { margin: var(--s-2) auto 0; text-align: center; }
 .vd-arrow { border-color: var(--ink-40); color: var(--ink); }
 .vd-arrow:hover:not(:disabled) { border-color: var(--ink); }
 

@@ -79,6 +79,8 @@ CASES = [
   t('M17 dial revealed',            !q('.vd-dial-wrap').hidden && !q('.vd-you').hidden);
   t('M17 one moment at a time',     document.querySelectorAll('.vd-ev.is-on').length === 1);
   t('M17 ticks drawn',              document.querySelectorAll('.vd-tick').length > 40);
+  t('M17 hour labels every 2h',     document.querySelectorAll('.vd-hl').length >= 12 &&
+                                    q('.vd-hl').textContent.match(/^\d{1,2}(am|pm)$/) !== null);
   /* The resolved room is drawn over several seconds; read where it ends. */
   q('.room').classList.add('in');
   q('.room-wide .rm-comp').style.transition = 'none';

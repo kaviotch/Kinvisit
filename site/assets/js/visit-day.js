@@ -47,7 +47,18 @@
   for (var k = 0; k < count; k++) {
     var tk = document.createElement('span');
     tk.className = 'vd-tick';
-    if (((first + k * SLOT) % 60 + 60) % 60 === 0) tk.className += ' vd-hour';
+    var m = first + k * SLOT;
+    if ((m % 60 + 60) % 60 === 0) {
+      tk.className += ' vd-hour';
+      /* Every second hour gets its time, in Delhi, like a ruler. */
+      var h = ((m / 60) % 24 + 24) % 24;
+      if (h % 2 === 0) {
+        var lab = document.createElement('b');
+        lab.className = 'vd-hl';
+        lab.textContent = (h % 12 || 12) + (h < 12 ? 'am' : 'pm');
+        tk.appendChild(lab);
+      }
+    }
     if (evSlots.indexOf(k) > -1) tk.className += ' vd-evt';
     frag.appendChild(tk);
     ticks.push(tk);
@@ -225,9 +236,35 @@
   /* Dragging moves the strip under the needle, like film through a gate:
      pull left and the day moves forward. A tap without a drag jumps to the
      moment nearest the tick that was tapped. */
-  var drag = null;
+  var drag = null, glide = 0;
+
+  function clampPos(p) { return Math.max(0, Math.min(count - 1, p)); }
+
+  /* A flick keeps the strip moving and lets friction stop it, then the
+     strip eases onto the nearest moment. Positions are fractional while it
+     moves so the motion is smooth, and whole again once it settles. */
+  function coast(v) {
+    var last = performance.now();
+    function frame(now) {
+      var dt = Math.min(48, now - last);
+      last = now;
+      pos = clampPos(pos + v * dt);
+      v *= Math.pow(0.992, dt);
+      go(eventAt(Math.round(pos)), true);
+      if (Math.abs(v) > 0.002 && pos > 0 && pos < count - 1) {
+        glide = requestAnimationFrame(frame);
+      } else {
+        glide = 0;
+        root.classList.remove('vd-dragging');
+        go(nearest(Math.round(pos)));
+      }
+    }
+    glide = requestAnimationFrame(frame);
+  }
+
   dial.addEventListener('pointerdown', function (e) {
-    drag = { x: e.clientX, from: pos, moved: false };
+    if (glide) { cancelAnimationFrame(glide); glide = 0; }
+    drag = { x: e.clientX, from: pos, moved: false, samples: [[performance.now(), e.clientX]] };
     try { dial.setPointerCapture(e.pointerId); } catch (err) { /* older Safari */ }
   });
   dial.addEventListener('pointermove', function (e) {
@@ -236,17 +273,28 @@
     if (!drag.moved && Math.abs(dx) < 4) return;
     drag.moved = true;
     root.classList.add('vd-dragging');
-    pos = Math.max(0, Math.min(count - 1, drag.from - Math.round(dx / PITCH)));
-    go(eventAt(pos), true);
+    drag.samples.push([performance.now(), e.clientX]);
+    if (drag.samples.length > 5) drag.samples.shift();
+    pos = clampPos(drag.from - dx / PITCH);
+    go(eventAt(Math.round(pos)), true);
   });
   function end(e) {
     if (!drag) return;
-    root.classList.remove('vd-dragging');
     if (drag.moved) {
-      go(nearest(pos));
+      var a = drag.samples[0], b = drag.samples[drag.samples.length - 1];
+      var span = b[0] - a[0], idle = performance.now() - b[0];
+      /* Slots per millisecond over the last few samples. A finger that
+         stopped before it lifted is a placement, not a flick. */
+      var v = span > 0 && idle < 80 ? -(b[1] - a[1]) / PITCH / span : 0;
+      if (!KV.reduced && Math.abs(v) > 0.01) {
+        coast(v);
+      } else {
+        root.classList.remove('vd-dragging');
+        go(nearest(Math.round(pos)));
+      }
     } else {
       var r = dial.getBoundingClientRect();
-      var slot = pos + Math.round((e.clientX - r.left - r.width / 2) / PITCH);
+      var slot = Math.round(pos) + Math.round((e.clientX - r.left - r.width / 2) / PITCH);
       go(nearest(slot));
     }
     drag = null;

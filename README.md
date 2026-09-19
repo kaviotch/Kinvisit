@@ -382,6 +382,22 @@ WhatsApp the desk composes before the companion leaves the building, and the
 report. Adding a live update from the waiting room would make the section
 promise a service that does not run.
 
+## The room, the map, and the dial
+
+- **The room diagram** on the homepage resolves when it is reached with a
+  script running: a companion takes the empty chair, the broken line goes, and
+  a same-day record is drawn across the gap in the highlighter. The family
+  never moves into the room, because the product does not put them there.
+  Without a script the figure stays as the problem the copy describes.
+- **The hospital map** on `/hospitals` is drawn by `hospital_map()` in
+  `mechanisms.py` from `lat` and `lng` in `content/hospitals.json`. No map
+  provider, no tiles, no request. **The coordinates are approximate and were
+  entered from memory: check every one against a real map before launch.**
+  The checker lights the matched pin and dims the rest.
+- **The visit-day dial** coasts after a flick and eases onto the nearest
+  moment, and carries Delhi hour labels every two hours. Reduced motion
+  turns the coasting off.
+
 ## The design system
 
 "The Record". Cool paper `#F2F3EF`, white sheets lifted off it, forest ink
