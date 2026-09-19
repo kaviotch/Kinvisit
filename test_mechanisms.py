@@ -79,6 +79,12 @@ CASES = [
   t('M17 dial revealed',            !q('.vd-dial-wrap').hidden && !q('.vd-you').hidden);
   t('M17 one moment at a time',     document.querySelectorAll('.vd-ev.is-on').length === 1);
   t('M17 ticks drawn',              document.querySelectorAll('.vd-tick').length > 40);
+  /* The resolved room is drawn over several seconds; read where it ends. */
+  q('.room').classList.add('in');
+  q('.room-wide .rm-comp').style.transition = 'none';
+  q('.room-wide .rm-before').style.transition = 'none';
+  t('room seats the companion',     getComputedStyle(q('.room-wide .rm-comp')).opacity === '1');
+  t('room drops the broken line',   getComputedStyle(q('.room-wide .rm-before')).opacity === '0');
   t('M17 starts the night before',  q('.vd-ev.is-on').getAttribute('data-vd-id') === 'questions');
   t('M17 your questions on phone',  document.querySelectorAll('.vd-phone .vd-msg').length === 1);
   q('[data-vd-zone]').value = 'Europe/London';

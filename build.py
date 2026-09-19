@@ -958,31 +958,48 @@ def _person(x, y, cls="body"):
 
 # The consultation room, drawn rather than described. Two SVGs rather than one
 # scaled down, because a 760 wide diagram shrunk to a phone makes 4px labels.
+#
+# The .rm-after parts are what Kinvisit changes: a companion takes the empty
+# chair in the room, and the record crosses the gap the family cannot. They
+# are drawn in only when the figure is reached with a script running. Without
+# one the figure shows the problem, which is what the copy around it argues.
+# The family never moves into the room, because they never do.
+
+ROOM_ARIA = ("A solid box containing the doctor and your parent, and a separate dashed box "
+             "containing the family who pays. The line between them is broken. With Kinvisit, a "
+             "companion sits in the room and a same-day record crosses the gap.")
+
 ROOM_SVG = f"""<svg class="room-figure room-wide" viewBox="0 0 760 250" role="img"
-  aria-label="A solid box containing the doctor and your parent, and a separate dashed box containing the family who pays. The line between them is broken.">
+  aria-label="{ROOM_ARIA}">
   <rect class="solid"  x="1"   y="34" width="330" height="200"/>
   <rect class="dashed" x="471" y="34" width="288" height="200"/>
   <text class="lbl"     x="14"  y="22">The consultation room &#183; 8 minutes</text>
   <text class="lbl lbl-out" x="484" y="22">Another city &#183; another country</text>
-  {_person(110, 118)}<text class="lbl" x="110" y="182" text-anchor="middle">Doctor</text>
-  {_person(232, 118)}<text class="lbl" x="232" y="182" text-anchor="middle">Your parent</text>
+  {_person(80, 118)}<text class="lbl" x="80" y="182" text-anchor="middle">Doctor</text>
+  {_person(175, 118)}<text class="lbl" x="175" y="182" text-anchor="middle">Your parent</text>
+  <g class="rm-after rm-comp">{_person(270, 118)}<text class="lbl" x="270" y="182" text-anchor="middle">Companion</text></g>
   {_person(615, 118, "body-out")}<text class="lbl lbl-out" x="615" y="182" text-anchor="middle">The family who pays</text>
-  <text class="lbl" x="401" y="126" text-anchor="middle">Nothing leaves</text>
-  <line class="gap-line" x1="339" y1="152" x2="379" y2="152"/>
-  <line class="gap-line" x1="423" y1="152" x2="463" y2="152"/>
+  <text class="lbl rm-before" x="401" y="126" text-anchor="middle">Nothing leaves</text>
+  <text class="lbl rm-after rm-say" x="401" y="126" text-anchor="middle">Same-day record</text>
+  <line class="gap-line rm-before" x1="339" y1="152" x2="379" y2="152"/>
+  <line class="gap-line rm-before" x1="423" y1="152" x2="463" y2="152"/>
+  <path class="rm-after rm-carry" pathLength="1" d="M339 152H461M451 145l10 7-10 7"/>
 </svg>
 <svg class="room-figure room-tall" viewBox="0 0 340 470" role="img"
-  aria-label="A solid box containing the doctor and your parent, and a separate dashed box containing the family who pays. The line between them is broken.">
+  aria-label="{ROOM_ARIA}">
   <rect class="solid"  x="1" y="26"  width="338" height="196"/>
   <rect class="dashed" x="1" y="308" width="338" height="152"/>
   <text class="lbl"     x="14" y="16">The consultation room &#183; 8 minutes</text>
   <text class="lbl lbl-out" x="14" y="298">Another city &#183; another country</text>
-  {_person(96, 104)}<text class="lbl" x="96" y="170" text-anchor="middle">Doctor</text>
-  {_person(240, 104)}<text class="lbl" x="240" y="170" text-anchor="middle">Your parent</text>
+  {_person(65, 104)}<text class="lbl" x="65" y="170" text-anchor="middle">Doctor</text>
+  {_person(170, 104)}<text class="lbl" x="170" y="170" text-anchor="middle">Your parent</text>
+  <g class="rm-after rm-comp">{_person(275, 104)}<text class="lbl" x="275" y="170" text-anchor="middle">Companion</text></g>
   {_person(170, 378, "body-out")}<text class="lbl lbl-out" x="170" y="442" text-anchor="middle">The family who pays</text>
-  <text class="lbl" x="170" y="262" text-anchor="middle">Nothing leaves</text>
-  <line class="gap-line" x1="170" y1="230" x2="170" y2="248"/>
-  <line class="gap-line" x1="170" y1="276" x2="170" y2="294"/>
+  <text class="lbl rm-before" x="170" y="262" text-anchor="middle">Nothing leaves</text>
+  <text class="lbl rm-after rm-say" x="186" y="262">Same-day record</text>
+  <line class="gap-line rm-before" x1="170" y1="230" x2="170" y2="248"/>
+  <line class="gap-line rm-before" x1="170" y1="276" x2="170" y2="294"/>
+  <path class="rm-after rm-carry" pathLength="1" d="M170 230V298M163 288l7 10 7-10"/>
 </svg>"""
 
 

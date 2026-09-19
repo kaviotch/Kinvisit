@@ -2033,3 +2033,32 @@ html:not(.js) .pt-strip { display: none; }
   to   { background-size: 100% 100%; }
 }
 
+/* ---------------------------------------------------- the room, resolved
+   Reached with a script running, the room figure draws in what Kinvisit
+   changes, in order: the empty chair is taken, the broken line goes, and
+   the record is drawn across the gap in the highlighter. Without a script
+   the figure stays as the problem, and with reduced motion it arrives
+   already resolved. */
+
+.rm-after { opacity: 0; }
+.room-figure .rm-carry { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.panel .room-figure .rm-carry { stroke: var(--accent-lit); }
+.panel .room-figure .rm-say { fill: var(--on-forest); }
+
+.js .room.in .rm-after { opacity: 1; }
+.js .room.in .rm-before { opacity: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .room .rm-comp { transform: translateY(10px); }
+  .js .room.in .rm-comp {
+    transform: none;
+    transition: opacity 700ms var(--ease) 900ms, transform 700ms var(--ease) 900ms;
+  }
+  .js .room.in .rm-before { transition: opacity 300ms var(--ease) 1800ms; }
+  .js .room .rm-carry { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .js .room.in .rm-carry {
+    stroke-dashoffset: 0;
+    transition: opacity 1ms linear 2000ms, stroke-dashoffset 900ms var(--ease) 2000ms;
+  }
+  .js .room.in .rm-say { transition: opacity 500ms var(--ease) 2700ms; }
+}

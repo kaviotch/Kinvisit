@@ -40,6 +40,9 @@ CASES = [
         r'11:51', r'not a clinician on duty',
     ], []),
     ("index.html", "M15 context bar hidden", [r'data-mech="ctxbar" hidden'], []),
+    ("index.html", "the room diagram still shows the problem", [
+        r'Nothing leaves', r'class="rm-after rm-comp"',
+    ], []),
     ("index.html", "M17 the whole visit day is listed in India time", [
         r'class="vd-list"', r'9:40pm the evening before', r'11:12am', r'eGFR 58, recorded in April',
         r'Consultation report #04 is ready', r'class="vd-dial-wrap" hidden', r'class="vd-you" hidden',
